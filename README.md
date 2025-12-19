@@ -33,8 +33,6 @@ Gone are the days of circling the block. With our **Live Sync** technology and *
 | | | |
 | *Futuristic Home* | *Live Grid View* | *History & Filters* |
 
-*(Note: Don't forget to add actual screenshots here later!)*
-
 ## 🚀 How to Run Locally
 
 1.  **Clone the Repo:**
@@ -85,4 +83,4 @@ Open a Pull Request.
 📄 License
 Distributed under the MIT License. See LICENSE for more information.
 
-<p align="center"> Built with ❤️, Java, and a lot of Caffeine by <b>Anon</b> </p>
+<p align="center"> Built with ❤️, Java, and a lot of Caffeine by <b>AnonJJ</b> </p>
