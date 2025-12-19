@@ -33,13 +33,10 @@ Gone are the days of circling the block. With our **Live Sync** technology and *
 | | | |
 | *Futuristic Home* | *Live Grid View* | *History & Filters* |
 
-*(Note: Don't forget to add actual screenshots here later!)*
-
 ## 🚀 How to Run Locally
 
 1.  **Clone the Repo:**
     ```bash
-    git clone [https://github.com/YourUsername/ParkEasy.git](https://github.com/YourUsername/ParkEasy.git)
     ```
 2.  **Open in Android Studio:**
     File > Open > Select the `ParkEasy` folder.
@@ -68,20 +65,3 @@ public static void freeExpiredSlots() {
           // 🧹 Sweeps away old data instantly
       });
 }
-🤝 Contributing
-Got a wild idea? Found a bug?
-
-Fork the Project.
-
-Create your Feature Branch (git checkout -b feature/AmazingFeature).
-
-Commit your Changes (git commit -m 'Add some AmazingFeature').
-
-Push to the Branch (git push origin feature/AmazingFeature).
-
-Open a Pull Request.
-
-📄 License
-Distributed under the MIT License. See LICENSE for more information.
-
-<p align="center"> Built with ❤️, Java, and a lot of Caffeine by <b>AnonJJ</b> </p>
