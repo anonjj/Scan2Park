@@ -115,7 +115,7 @@ public class DashboardActivity extends AppCompatActivity {
         // Fetch the user's profile payload (Name & Wallet Balance).
         firebaseManager.getUserData(
                 currentUser.getUid(),
-                new FirebaseManager.FirestoreCallback<>() {
+                new FirebaseManager.FirestoreCallback<com.example.parkeasy.model.User>() {
                     @Override
                     public void onSuccess(com.example.parkeasy.model.User user) {
                         if (user != null) {
@@ -162,6 +162,6 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadUserData();
-        com.example.parkeasy.utils.ParkingJanitor.freeExpiredSlots();
+        com.example.parkeasy.data.ParkingJanitor.freeExpiredSlots();
     }
 }

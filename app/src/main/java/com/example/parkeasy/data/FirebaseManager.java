@@ -282,31 +282,50 @@ public class FirebaseManager {
                 })
                 .addOnFailureListener(callback::onFailure);
     }
+    // REPLACES your existing "bookSlot" method
     public void bookSlot(Slot slot, String userId, int durationHours, double totalPrice, FirestoreCallback<String> callback) {
-        // Create a unique ID for the booking
-        String bookingId = mDb.collection("bookings").document().getId();
+        mDb.runTransaction(transaction -> {
+                    // 1. Check User Wallet Balance
+                    DocumentSnapshot userSnap = transaction.get(mDb.collection("users").document(userId));
+                    Double currentBalance = userSnap.getDouble("walletBalance");
+                    if (currentBalance == null) currentBalance = 0.0;
 
-        // Create the booking data map
-        Map<String, Object> bookingData = new HashMap<>();
-        bookingData.put("bookingId", bookingId);
-        bookingData.put("slotId", slot.getSlotId());
-        bookingData.put("slotName", slot.getName());
-        bookingData.put("userId", userId);
-        bookingData.put("startTime", new Date());
-        bookingData.put("durationHours", durationHours);
-        bookingData.put("totalCost", totalPrice);
-        bookingData.put("status", "CONFIRMED");
+                    if (currentBalance < totalPrice) {
+                        throw new FirebaseFirestoreException("Insufficient Funds!", FirebaseFirestoreException.Code.ABORTED);
+                    }
 
-        // Write to Firestore
-        mDb.collection("bookings").document(bookingId)
-                .set(bookingData)
-                .addOnSuccessListener(aVoid -> {
-                    // Also update the slot to 'occupied'
-                    mDb.collection("slots").document(slot.getSlotId())
-                            .update("occupied", true)
-                            .addOnSuccessListener(unused -> callback.onSuccess(bookingId))
-                            .addOnFailureListener(callback::onFailure);
-                })
+                    // 2. Generate IDs
+                    String bookingId = mDb.collection("bookings").document().getId();
+                    Date startTime = new Date();
+                    // Calculate End Time (Start + Duration)
+                    long endTimeMillis = startTime.getTime() + (durationHours * 3600000L);
+
+                    // 3. Create Booking Data
+                    Map<String, Object> bookingData = new HashMap<>();
+                    bookingData.put("bookingId", bookingId);
+                    // ⚠️ CHECK: Does your Slot model use getId() or getSlotId()? Use the correct one!
+                    bookingData.put("slotId", slot.getSlotId());
+                    bookingData.put("slotName", slot.getName());
+                    bookingData.put("userId", userId);
+                    bookingData.put("startTime", startTime);
+                    bookingData.put("endTime", new Date(endTimeMillis)); // Store End Time
+                    bookingData.put("durationHours", durationHours);
+                    bookingData.put("totalCost", totalPrice);
+                    bookingData.put("status", "CONFIRMED");
+                    bookingData.put("locationName", "Quantum Plaza"); // Or pass this in if available
+
+                    // 4. WRITE EVERYTHING AT ONCE
+                    // Deduct Money
+                    transaction.update(mDb.collection("users").document(userId), "walletBalance", currentBalance - totalPrice);
+                    // Create Booking
+                    transaction.set(mDb.collection("bookings").document(bookingId), bookingData);
+                    // Mark Slot Occupied
+                    transaction.update(mDb.collection("slots").document(slot.getSlotId()), "occupied", true);
+                    transaction.update(mDb.collection("slots").document(slot.getSlotId()), "expiryTime", endTimeMillis);
+
+                    return bookingId; // Success! Return the ID.
+
+                }).addOnSuccessListener(callback::onSuccess)
                 .addOnFailureListener(callback::onFailure);
     }
     // ----------------------------------------------------------------

@@ -21,7 +21,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
     private List<Booking> bookingList;
     private OnBookingActionListener listener;
 
-    // 🚀 NEW INTERFACE with 3 Actions
+    // ✅ CORRECT INTERFACE: Has all 3 actions needed by your Activity
     public interface OnBookingActionListener {
         void onItemClick(Booking booking);   // View Receipt
         void onCancelClick(Booking booking); // Cancel Action
@@ -45,6 +45,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Booking booking = bookingList.get(position);
 
+        // ✅ USE REAL DATA (No string hacking)
         holder.tvSlotName.setText(booking.getSlotName());
         holder.tvLocation.setText(booking.getLocationName());
         holder.tvPrice.setText("₹" + (int)booking.getTotalCost());
@@ -57,30 +58,27 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
         String status = booking.getStatus() != null ? booking.getStatus().toUpperCase() : "UNKNOWN";
         holder.tvStatus.setText(status);
 
-        // 🎨 COLOR & VISIBILITY LOGIC
+        // 🎨 SUPERIOR COLOR LOGIC
         if (status.equals("ACTIVE") || status.equals("CONFIRMED")) {
-            // Neon Green & SHOW BUTTONS
-            int color = Color.parseColor("#00FF88");
+            int color = Color.parseColor("#00FF88"); // Neon Green
             holder.statusStrip.setBackgroundColor(color);
             holder.tvStatus.setTextColor(color);
-            holder.layoutActions.setVisibility(View.VISIBLE); // Show Buttons
+            holder.layoutActions.setVisibility(View.VISIBLE); // ✅ Show Buttons
         }
         else if (status.equals("CANCELLED")) {
-            // Neon Red & HIDE BUTTONS
-            int color = Color.parseColor("#FF0055");
+            int color = Color.parseColor("#FF0055"); // Neon Red
             holder.statusStrip.setBackgroundColor(color);
             holder.tvStatus.setTextColor(color);
-            holder.layoutActions.setVisibility(View.GONE);
+            holder.layoutActions.setVisibility(View.GONE); // 🙈 Hide Buttons
         }
         else {
-            // Completed (Cyan) & HIDE BUTTONS
-            int color = Color.parseColor("#00F0FF");
+            int color = Color.parseColor("#00F0FF"); // Neon Cyan
             holder.statusStrip.setBackgroundColor(color);
             holder.tvStatus.setTextColor(color);
-            holder.layoutActions.setVisibility(View.GONE);
+            holder.layoutActions.setVisibility(View.GONE); // 🙈 Hide Buttons
         }
 
-        // Click Listeners
+        // ✅ CLICK LISTENERS
         holder.itemView.setOnClickListener(v -> listener.onItemClick(booking));
         holder.btnCancel.setOnClickListener(v -> listener.onCancelClick(booking));
         holder.btnExtend.setOnClickListener(v -> listener.onExtendClick(booking));
@@ -96,14 +94,13 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            // Ensure these IDs exist in item_booking_history.xml
             tvSlotName = itemView.findViewById(R.id.tvSlotName);
             tvLocation = itemView.findViewById(R.id.tvLocationName);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             statusStrip = itemView.findViewById(R.id.viewStatusColor);
-
-            // New Views
             layoutActions = itemView.findViewById(R.id.layoutActions);
             btnCancel = itemView.findViewById(R.id.btnCancel);
             btnExtend = itemView.findViewById(R.id.btnExtend);

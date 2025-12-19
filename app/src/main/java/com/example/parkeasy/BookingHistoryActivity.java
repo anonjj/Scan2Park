@@ -80,6 +80,7 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
         FirebaseManager.getInstance().cancelBooking(booking.getBookingId(), booking.getSlotId(), new FirebaseManager.FirestoreCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
+                if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
                 Toast.makeText(BookingHistoryActivity.this, "Booking Cancelled!", Toast.LENGTH_SHORT).show();
                 loadBookingsFromFirebase(); // Refresh List
@@ -87,6 +88,7 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
 
             @Override
             public void onFailure(Exception e) {
+                if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
                 Toast.makeText(BookingHistoryActivity.this, "Cancel Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -102,6 +104,7 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
         FirebaseManager.getInstance().extendSpecificBooking(booking.getBookingId(), booking.getSlotId(), extensionCost, new FirebaseManager.FirestoreCallback<String>() {
             @Override
             public void onSuccess(String result) {
+                if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
                 Toast.makeText(BookingHistoryActivity.this, "Extended by 1 Hour!", Toast.LENGTH_SHORT).show();
                 loadBookingsFromFirebase(); // Refresh List
@@ -109,6 +112,7 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
 
             @Override
             public void onFailure(Exception e) {
+                if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
                 Toast.makeText(BookingHistoryActivity.this, "Extend Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -121,6 +125,7 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
         FirebaseManager.getInstance().getUserBookings(new FirebaseManager.FirestoreCallback<List<Booking>>() {
             @Override
             public void onSuccess(List<Booking> result) {
+                if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
                 allBookings.clear();
                 allBookings.addAll(result);
@@ -129,6 +134,7 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
             }
             @Override
             public void onFailure(Exception e) {
+                if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
             }
         });

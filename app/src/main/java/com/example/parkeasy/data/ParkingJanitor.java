@@ -1,39 +1,47 @@
-package com.example.parkeasy.utils;
+package com.example.parkeasy.data;
 
 import android.util.Log;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 public class ParkingJanitor {
 
+    /**
+     * Checks all slots. If a slot is marked 'occupied' but the time has passed,
+     * it forces the slot to become FREE again.
+     */
     public static void freeExpiredSlots() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         long currentTime = System.currentTimeMillis();
 
-        // 🔍 QUERY: Find all slots that are "Occupied" BUT have "Expired"
+        // Query: Find slots that claim to be occupied
         db.collection("slots")
                 .whereEqualTo("occupied", true)
-                .whereLessThan("expiryTime", currentTime) // Expired!
                 .get()
                 .addOnSuccessListener(snapshots -> {
-                    if (snapshots.isEmpty()) return; // Nothing to clean
+                    if (snapshots.isEmpty()) return;
 
                     WriteBatch batch = db.batch();
-                    for (QueryDocumentSnapshot doc : snapshots) {
-                        // 🧹 CLEANUP: Set occupied to false, reset expiry
-                        batch.update(doc.getReference(), "occupied", false);
-                        batch.update(doc.getReference(), "expiryTime", 0);
-                        batch.update(doc.getReference(), "bookingId", null);
+                    int count = 0;
+
+                    for (DocumentSnapshot doc : snapshots) {
+                        Long expiryTime = doc.getLong("expiryTime");
+                        if (expiryTime != null && expiryTime < currentTime) {
+                            // 🧹 CLEANUP: This slot expired! Free it.
+                            batch.update(doc.getReference(), "occupied", false);
+                            batch.update(doc.getReference(), "expiryTime", 0);
+                            count++;
+                        }
                     }
 
-                    // 🚀 COMMIT CHANGES
-                    batch.commit().addOnSuccessListener(aVoid ->
-                            Log.d("ParkingJanitor", "🧹 Cleaned " + snapshots.size() + " expired slots!")
-                    );
+                    if (count > 0) {
+                        final int cleanedCount = count;
+                        batch.commit().addOnSuccessListener(aVoid ->
+                                Log.d("ParkingJanitor", "🧹 Cleaned up " + cleanedCount + " expired slots.")
+                        );
+                    }
                 })
-                .addOnFailureListener(e ->
-                        Log.e("ParkingJanitor", "Cleanup failed", e)
-                );
+                .addOnFailureListener(e -> Log.e("ParkingJanitor", "Cleanup failed", e));
     }
 }

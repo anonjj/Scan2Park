@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.example.parkeasy.model.Booking;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 import javax.mail.Message;
@@ -15,9 +16,9 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailService {
 
-    // 🔒 CREDENTIALS (Use App Password)
-    private static final String SENDER_EMAIL = "your-email@gmail.com";
-    private static final String SENDER_PASSWORD = "your-app-password";
+    // 🔒 TODO: REPLACE THESE WITH YOUR REAL CREDENTIALS BEFORE DEMO!
+    private static final String SENDER_EMAIL = "parkeasy.dev@gmail.com";
+    private static final String SENDER_PASSWORD = "pctewandbaqkxman"; // The 16-char App Password
 
     public static void sendBookingReceipt(String userEmail, Booking booking, String userName) {
         new SendMailTask(userEmail, booking, userName).execute();
@@ -51,15 +52,18 @@ public class EmailService {
                 });
 
                 MimeMessage message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(SENDER_EMAIL, "Scan2Pay Admin"));
+
+                // ✅ UPDATED NAME HERE:
+                message.setFrom(new InternetAddress(SENDER_EMAIL, "Scan2Park Admin"));
+
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-                message.setSubject("Booking Confirmed: " + booking.getSlotName());
+                message.setSubject("Scan2Park Receipt: " + booking.getSlotName()); // Updated Subject too!
 
                 String htmlBody = getHtmlReceipt(userName, booking);
                 message.setContent(htmlBody, "text/html; charset=utf-8");
 
                 Transport.send(message);
-                Log.d("EmailService", "Receipt Sent Successfully!");
+                Log.d("EmailService", "Receipt Sent Successfully to " + email);
 
             } catch (Exception e) {
                 Log.e("EmailService", "Failed to send email", e);
@@ -68,12 +72,15 @@ public class EmailService {
         }
 
         private String getHtmlReceipt(String name, Booking b) {
+            // Safety check: Use current time if booking time is missing
+            Date timeToDisplay = b.getStartTime() != null ? b.getStartTime() : new Date();
+
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
-            String dateStr = sdf.format(b.getStartTime());
+            String dateStr = sdf.format(timeToDisplay);
 
             return "<html><body style='background-color:#0F1628; color:#ffffff; font-family: sans-serif; padding:20px;'>"
                     + "<div style='background-color:#151932; padding:20px; border-radius:10px; border:1px solid #00F0FF; max-width:500px; margin:auto;'>"
-                    + "<h2 style='color:#00F0FF; text-align:center;'>BOOKING CONFIRMED</h2>"
+                    + "<h2 style='color:#00F0FF; text-align:center;'>Scan2Park Receipt</h2>"
                     + "<p style='text-align:center; color:#7A8BA0;'>Hi " + name + ", your spot is secured.</p>"
                     + "<hr style='border-color:#333;'>"
                     + "<table style='width:100%; color:#fff;'>"
@@ -84,7 +91,6 @@ public class EmailService {
                     + "<tr><td style='padding:8px; color:#7A8BA0;'>Vehicle</td><td style='text-align:right;'>" + b.getVehicleNumber() + "</td></tr>"
                     + "</table>"
                     + "<hr style='border-color:#333;'>"
-                    // 👇 UPDATED TO USE getTotalCost()
                     + "<h1 style='text-align:center; color:#00FF88;'>₹" + (int)b.getTotalCost() + ".00</h1>"
                     + "<p style='text-align:center; font-size:12px; color:#505050;'>TxID: " + b.getBookingId() + "</p>"
                     + "</div></body></html>";

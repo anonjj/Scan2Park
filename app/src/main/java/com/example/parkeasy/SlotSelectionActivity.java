@@ -90,6 +90,7 @@ public class SlotSelectionActivity extends AppCompatActivity {
                 .collection("slots")
                 .whereEqualTo("locationId", locationId)
                 .addSnapshotListener((snapshots, e) -> {
+                    if (isFinishing() || isDestroyed()) return;
 
                     // 1. Handle Errors
                     if (e != null) {
