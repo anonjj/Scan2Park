@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#1AFFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_neon_card"
+        android:padding="20dp">
+
+        <!-- Status Badge -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1A00E5FF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp">
+
+                <View
+                    android:id="@+id/viewStatus"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/selector_slot_bg"
+                    android:backgroundTint="@color/neon_cyan"/>
+
+                <TextView
+                    android:id="@+id/tvSlotName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A-04"
+                    android:textColor="@color/neon_cyan"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Booking ID Badge -->
+        <TextView
+            android:id="@+id/tvBookingId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#BK998822"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:background="@drawable/input_field_bg"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.05"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1AFFFFFF"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/cardStatus"/>
+
+        <!-- Time Icon + Range -->
+        <ImageView
+            android:id="@+id/iconTime"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_menu_recent_history"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:tint="@color/neon_pink" />
+
+        <TextView
+            android:id="@+id/tvTimeRange"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Today, 14:00 - 16:00"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintStart_toEndOf="@id/iconTime"
+            app:layout_constraintTop_toTopOf="@id/iconTime"
+            app:layout_constraintBottom_toBottomOf="@id/iconTime"
+            app:layout_constraintEnd_toStartOf="@id/tvCost"/>
+
+        <!-- Cost Badge -->
+        <TextView
+            android:id="@+id/tvCost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₹80"
+            android:textColor="@color/slot_available"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iconTime"
+            app:layout_constraintBottom_toBottomOf="@id/iconTime"/>
+
+        <!-- Payment Status -->
+        <TextView
+            android:id="@+id/tvPaymentStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PAID"
+            android:textColor="@color/slot_available"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:letterSpacing="0.1"
+            app:layout_constraintEnd_toEndOf="@id/tvCost"
+            app:layout_constraintTop_toBottomOf="@id/tvCost"/>
+
+        <!-- Action Buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnExtend"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:text="Extend"
+            android:textSize="13sp"
+            android:textColor="@color/neon_cyan"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            app:icon="@android:drawable/ic_menu_add"
+            app:iconTint="@color/neon_cyan"
+            app:iconGravity="textStart"
+            app:iconSize="18dp"
+            app:cornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#3300E5FF"
+            app:backgroundTint="#1A00E5FF"
+            app:rippleColor="#3300E5FF"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel"
+            app:layout_constraintTop_toBottomOf="@id/tvTimeRange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:text="Cancel"
+            android:textSize="13sp"
+            android:textColor="#FF4757"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            app:icon="@android:drawable/ic_menu_close_clear_cancel"
+            app:iconTint="#FF4757"
+            app:iconGravity="textStart"
+            app:iconSize="18dp"
+            app:cornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#33FF4757"
+            app:backgroundTint="#1AFF1744"
+            app:rippleColor="#33FF4757"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/btnExtend"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTimeRange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/neon_cyan"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:elevation="10dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1083139893190",
+    "project_id": "easyparking-51a75",
+    "storage_bucket": "easyparking-51a75.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083139893190:android:611f8654c5ef87fb4ab4c7",
+        "android_client_info": {
+          "package_name": "com.example.parkeasy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYvxdDb9oBVc7pZ2oTBP2nez8hjxt6fdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

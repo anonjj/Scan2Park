@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_cyber_gradient"
+    android:paddingHorizontal="20dp">
+
+    <!-- Glowing Header Section -->
+    <LinearLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/bg_neon_glow_header">
+
+        <!-- Animated Check Icon -->
+        <ImageView
+            android:id="@+id/ivCheck"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_cyber_check"
+            app:tint="@color/neon_cyan"
+            tools:ignore="ContentDescription" />
+
+        <!-- Main Title with Glow -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="CONFIRMED"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:shadowColor="@color/neon_pink"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="20"
+            android:letterSpacing="0.05" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="ACCESS GRANTED"
+            android:textColor="@color/neon_cyan"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:letterSpacing="0.1" />
+    </LinearLayout>
+
+    <!-- Neon Glowing Card for Details -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:cardBackgroundColor="@color/dark_surface"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerContainer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:background="@drawable/bg_neon_card_glow">
+
+            <!-- Card Title with Neon Line -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DIGITAL RECEIPT"
+                android:textColor="@color/neon_pink"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.2"
+                android:drawableBottom="@drawable/neon_line_pink"
+                android:drawablePadding="8dp"
+                android:paddingBottom="8dp"/>
+
+            <!-- Cyber Grid Layout for Details -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:columnCount="2"
+                android:rowCount="4"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false"
+                android:padding="4dp">
+
+                <!-- Row 1: Location -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_gravity="start"
+                    android:layout_row="0"
+                    android:text="LOCATION"
+                    android:textColor="@color/cyber_text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tvReceiptLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_gravity="end"
+                    android:layout_row="0"
+                    android:text="NEON MALL"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+                <!-- Row 2: Slot ID -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_gravity="start"
+                    android:layout_row="1"
+                    android:layout_marginTop="16dp"
+                    android:text="SLOT ID"
+                    android:textColor="@color/cyber_text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tvReceiptSlot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_gravity="end"
+                    android:layout_row="1"
+                    android:layout_marginTop="16dp"
+                    android:text="A-04"
+                    android:textColor="@color/neon_cyan"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:shadowColor="@color/neon_cyan"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="10"
+                    android:letterSpacing="0.1" />
+
+                <!-- Row 3: Time -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_gravity="start"
+                    android:layout_row="2"
+                    android:layout_marginTop="16dp"
+                    android:text="TIME"
+                    android:textColor="@color/cyber_text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tvReceiptDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_gravity="end"
+                    android:layout_row="2"
+                    android:layout_marginTop="16dp"
+                    android:text="14:30 - 16:30"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:letterSpacing="0.1" />
+
+                <!-- Row 4: Amount -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_gravity="start"
+                    android:layout_row="3"
+                    android:layout_marginTop="16dp"
+                    android:text="AMOUNT"
+                    android:textColor="@color/cyber_text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tvReceiptAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:layout_gravity="end"
+                    android:layout_row="3"
+                    android:layout_marginTop="16dp"
+                    android:text="₹80"
+                    android:textColor="@color/neon_green"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:shadowColor="@color/neon_green"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="15"
+                    android:letterSpacing="0.1" />
+            </GridLayout>
+
+            <!-- Status Indicator -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_neon_status_active"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="8dp"
+                android:text="ACTIVE • READY FOR SCAN"
+                android:textColor="@color/neon_cyan"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.15" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- QR Code Container with Scan Frame -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardQr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:cardBackgroundColor="@color/dark_surface"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardDetails">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:background="@drawable/bg_neon_card_glow_cyan">
+
+            <!-- Scan Frame with QR Code -->
+            <FrameLayout
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:background="@drawable/bg_qr_scan_frame">
+
+                <!-- QR Code Image -->
+                <ImageView
+                    android:id="@+id/ivQrCode"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/qr_code_description"
+                    android:src="@drawable/qr_placeholder"
+                    tools:src="@tools:sample/avatars" />
+
+                <!-- Animated Scan Line -->
+                <View
+                    android:id="@+id/scanLine"
+                    android:layout_width="160dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_scan_line_gradient"
+                    android:visibility="visible" />
+            </FrameLayout>
+
+            <!-- Scan Instructions -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="SCAN AT ENTRY GATE"
+                android:textColor="@color/neon_pink"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.2" />
+
+            <!-- Booking ID with Cyber Font -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="ID: PARK-2023-11-27-A04"
+                android:textColor="@color/cyber_text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.15" />
+
+            <!-- Scan Hint -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="↑ POINT CAMERA HERE ↑"
+                android:textColor="@color/neon_cyan"
+                android:textSize="10sp"
+                android:alpha="0.8"
+                android:letterSpacing="0.1" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Bottom Action Buttons -->
+    <LinearLayout
+        android:id="@+id/bottomActions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardQr"
+        android:background="@drawable/bg_neon_button_container">
+
+        <!-- Share Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnShare"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_neon_outline"
+            android:text="SHARE"
+            android:textAllCaps="true"
+            android:textColor="@color/neon_pink"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/ic_share_neon"
+            android:letterSpacing="0.1" />
+
+        <!-- Home Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_neon_gradient_primary"
+            android:text="DASHBOARD"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/ic_dashboard_neon"
+            android:letterSpacing="0.1" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

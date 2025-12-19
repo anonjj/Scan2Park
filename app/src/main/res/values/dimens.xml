@@ -1,0 +1,17 @@
+<resources>
+    <!-- Cyberpunk Spacing -->
+    <dimen name="cyber_margin_small">8dp</dimen>
+    <dimen name="cyber_margin_medium">16dp</dimen>
+    <dimen name="cyber_margin_large">24dp</dimen>
+
+    <!-- Cyberpunk Elevation -->
+    <dimen name="cyber_elevation_low">4dp</dimen>
+    <dimen name="cyber_elevation_medium">12dp</dimen>
+    <dimen name="cyber_elevation_high">24dp</dimen>
+
+    <!-- Cyberpunk Text -->
+    <dimen name="cyber_text_small">12sp</dimen>
+    <dimen name="cyber_text_medium">16sp</dimen>
+    <dimen name="cyber_text_large">22sp</dimen>
+    <dimen name="cyber_text_xlarge">28sp</dimen>
+</resources>

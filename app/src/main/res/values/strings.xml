@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">ParkEasy</string>
+    <string name="app_logo">App Logo</string>
+
+    <!-- Registration Screen -->
+    <string name="create_account">Create Account</string>
+    <string name="sign_up_subtitle">Sign up to book your parking spot</string>
+    <string name="full_name">Full Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Must be at least 6 characters</string>
+    <string name="create_account_button">Create Account</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="or">OR</string>
+    <string name="qr_code_description">Booking QR Code for Gate Entry</string>
+    <string name="ic_share_neon">Share Icon</string>
+    <string name="ic_dashboard_neon">Dashboard Icon</string>
+</resources>
