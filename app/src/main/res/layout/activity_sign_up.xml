@@ -35,7 +35,7 @@
                     android:id="@+id/ivLogo"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/ic_parking_neon"
+                    android:src="@drawable/ic_profile"
                     android:contentDescription="@string/app_logo"
                     app:tint="@color/neon_pink"
                     app:layout_constraintTop_toTopOf="parent"

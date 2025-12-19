@@ -15,10 +15,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailService {
-
-    // 🔒 TODO: REPLACE THESE WITH YOUR REAL CREDENTIALS BEFORE DEMO!
     private static final String SENDER_EMAIL = "parkeasy.dev@gmail.com";
-    private static final String SENDER_PASSWORD = "pctewandbaqkxman"; // The 16-char App Password
+    private static final String SENDER_PASSWORD = "pcte wand baqk xman"; // The 16-char App Password
 
     public static void sendBookingReceipt(String userEmail, Booking booking, String userName) {
         new SendMailTask(userEmail, booking, userName).execute();

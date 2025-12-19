@@ -2,10 +2,10 @@
 <resources>
     <!-- Neon Theme Colors (New & Merged) -->
     <color name="neon_pink">#FF00FF</color>
-    <color name="neon_cyan">#00FFFF</color>
-    <color name="neon_purple">#9D00FF</color>
+    <color name="neon_cyan">#00E5FF</color>
+    <color name="neon_purple">#D500F9</color>
     <color name="neon_green">#00FF00</color>
-    <color name="neon_orange">#FF6600</color>
+    <color name="neon_orange">#FF3D00</color>
     <color name="neon_blue">#0080FF</color>
     <color name="neon_yellow">#FFFF00</color>
     <color name="neon_cyan_dim">#3300F3FF</color>
@@ -18,7 +18,7 @@
     <!-- Dark Theme Backgrounds (New & Merged) -->
     <color name="background_dark">#0A0E27</color>
     <color name="background_dark_alt">#1A1F3A</color>
-    <color name="card_dark">#16213E</color>
+    <color name="card_dark">#121212</color>
     <color name="card_dark_elevated">#1F2A48</color>
     <color name="dark_surface">#0A0A0F</color>
     <color name="cyber_black">#050812</color>
@@ -30,9 +30,9 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#8F9BB3</color>
     <color name="cyber_text_secondary">#8A8A9D</color>
-    <color name="text_neon_secondary">#B8C5D6</color>
+    <color name="text_neon_secondary">#B0BEC5</color>
     <color name="text_hint">#9E9E9E</color>
-    <color name="text_neon_hint">#6B7A8F</color>
+    <color name="text_neon_hint">#80FFFFFF</color>
 
     <!-- Gradient & Shadow Colors -->
     <color name="gradient_start">#0A0E27</color>
@@ -44,7 +44,7 @@
 
     <!-- Standard & Material Design Colors -->
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="primary">#2196F3</color>
     <color name="primary_dark">#1976D2</color>

@@ -10,7 +10,7 @@
         android:id="@+id/btnBack"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_launcher_foreground"
+        android:src="@drawable/ic_arrow_back"
         app:tint="@color/neon_cyan"
         android:background="@drawable/input_field_bg"
         android:padding="8dp"
