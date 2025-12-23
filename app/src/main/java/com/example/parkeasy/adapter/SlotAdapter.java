@@ -1,8 +1,12 @@
 package com.example.parkeasy.adapter;
 
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parkeasy.R;
@@ -13,18 +17,14 @@ import java.util.List;
 
 /**
  * Manages the grid of parking slots in the RecyclerView.
- * Responsible for displaying the state of each slot (Available, Booked, Selected).
+ * Responsible for displaying the state of each slot (Available, Occupied, Selected).
  */
 public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder> {
 
     private List<Slot> slots = new ArrayList<>();
     private final OnSlotClickListener listener;
-    private Slot selectedSlot; // Holds the currently tapped slot to give it a visual glow.
+    private Slot selectedSlot;
 
-
-    /**
-     * Callback interface to notify the Activity/Fragment when a user clicks on an available slot.
-     */
     public interface OnSlotClickListener {
         void onSlotClick(Slot slot);
     }
@@ -33,18 +33,11 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
         this.listener = listener;
     }
 
-    /**
-     * Updates the list of slots and triggers a full UI refresh.
-     * Typically called after fetching data from Firestore.
-     */
     public void submitList(List<Slot> newSlots) {
         this.slots = newSlots;
         notifyDataSetChanged();
     }
 
-    /**
-     * Caches the user's selected slot and triggers a redraw to apply the 'Selected' state visuals.
-     */
     public void setSelectedSlot(Slot slot) {
         this.selectedSlot = slot;
         notifyDataSetChanged();
@@ -68,10 +61,6 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
         return slots.size();
     }
 
-    /**
-     * ViewHolder for a single parking slot item.
-     * This is where the core logic for the slot's visual state lives.
-     */
     class SlotViewHolder extends RecyclerView.ViewHolder {
         private final ItemSlotBinding binding;
 
@@ -80,53 +69,40 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
             this.binding = binding;
         }
 
-        /**
-         * Binds a slot object to the view, setting its appearance based on its state.
-         * States:
-         * - Red (#FF1744): Booked and currently active.
-         * - Purple (#BC13FE): Available, but currently selected by the user.
-         * - Cyan (#00F3FF): Available for booking.
-         */
-        // Inside SlotViewHolder class
         public void bind(Slot slot) {
-            // 1. Set Name
+            Context context = itemView.getContext();
             binding.tvSlotName.setText(slot.getName());
 
-            // 2. Logic: Image & Color
             long currentTime = System.currentTimeMillis();
             boolean isActuallyOccupied = slot.isOccupied() && (slot.getExpiryTime() > currentTime);
+            boolean isSelected = selectedSlot != null && selectedSlot.getSlotId().equals(slot.getSlotId());
 
-            // Get views (Assuming you updated binding or using findViewById)
-            // ImageView ivIcon = binding.ivSlotIcon;
-            // TextView tvName = binding.tvSlotName;
-            // CardView container = binding.slotContainer; // If you gave ID to CardView
-
-            if (isActuallyOccupied) {
-                // --- CASE 1: OCCUPIED (Red Car) ---
+            if (isSelected) {
+                // --- CASE 1: SELECTED (Brand Blue Highlight) ---
+                binding.slotContainer.setCardBackgroundColor(ContextCompat.getColor(context, R.color.brand_primary));
+                binding.tvSlotName.setTextColor(ContextCompat.getColor(context, R.color.white));
                 binding.ivSlotIcon.setImageResource(R.drawable.ic_car_top_view);
-                binding.ivSlotIcon.setImageTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#FF1744"))); // Red
-
-                binding.tvSlotName.setTextColor(android.graphics.Color.parseColor("#505050")); // Dim text
-                binding.slotContainer.setAlpha(0.7f); // Dim the whole slot slightly
-                itemView.setClickable(false);
-            }
-            else if (selectedSlot != null && selectedSlot.getSlotId().equals(slot.getSlotId())) {
-                // --- CASE 2: SELECTED (Purple Car) ---
-                binding.ivSlotIcon.setImageResource(R.drawable.ic_car_top_view); // Show car to preview
-                binding.ivSlotIcon.setImageTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#BC13FE"))); // Neon Purple
-
-                binding.tvSlotName.setTextColor(android.graphics.Color.parseColor("#BC13FE"));
+                binding.ivSlotIcon.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
                 binding.slotContainer.setAlpha(1.0f);
-                itemView.setClickable(true);
-            }
+                itemView.setEnabled(true);
+            } 
+            else if (isActuallyOccupied) {
+                // --- CASE 2: OCCUPIED (Greyed Out) ---
+                binding.slotContainer.setCardBackgroundColor(Color.parseColor("#E0E0E0")); // Light Grey
+                binding.tvSlotName.setTextColor(Color.parseColor("#9E9E9E")); // Dimmed Text
+                binding.ivSlotIcon.setImageResource(R.drawable.ic_car_top_view);
+                binding.ivSlotIcon.setImageTintList(ColorStateList.valueOf(Color.parseColor("#9E9E9E"))); // Dimmed Icon
+                binding.slotContainer.setAlpha(0.8f);
+                itemView.setEnabled(false);
+            } 
             else {
-                // --- CASE 3: FREE (Empty Box) ---
+                // --- CASE 3: AVAILABLE (Default White State) ---
+                binding.slotContainer.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                binding.tvSlotName.setTextColor(ContextCompat.getColor(context, R.color.text_primary)); // Dark Grey
                 binding.ivSlotIcon.setImageResource(R.drawable.ic_slot_empty);
-                binding.ivSlotIcon.setImageTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#00FF88"))); // Cyan
-
-                binding.tvSlotName.setTextColor(android.graphics.Color.parseColor("#00FF88"));
+                binding.ivSlotIcon.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.brand_primary))); // Blue Icon
                 binding.slotContainer.setAlpha(1.0f);
-                itemView.setClickable(true);
+                itemView.setEnabled(true);
             }
 
             itemView.setOnClickListener(v -> {
@@ -135,9 +111,5 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
                 }
             });
         }
-    }
-    public void setSlots(List<Slot> newSlots) {
-        this.slots = newSlots; // Or whatever your internal list variable is named
-        notifyDataSetChanged();
     }
 }

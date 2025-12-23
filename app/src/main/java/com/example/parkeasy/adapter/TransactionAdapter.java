@@ -1,12 +1,13 @@
 package com.example.parkeasy.adapter;
 
-import android.graphics.Color;
+import android.content.Context;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.parkeasy.R;
 import com.example.parkeasy.model.Transaction;
@@ -30,16 +31,19 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TxViewHolder holder, int position) {
         Transaction tx = list.get(position);
+        Context context = holder.itemView.getContext();
 
         holder.tvDesc.setText(tx.getDescription());
         holder.tvDate.setText(DateFormat.format("dd MMM, hh:mm a", tx.getTimestamp()));
 
-        if ("CREDIT".equals(tx.getType())) {
-            holder.tvAmount.setText("+ ₹" + (int)tx.getAmount());
-            holder.tvAmount.setTextColor(Color.parseColor("#00FF88")); // Green
+        double amount = tx.getAmount();
+        
+        if (amount > 0) {
+            holder.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.brand_secondary)); // Green
+            holder.tvAmount.setText("+ ₹" + (int)amount);
         } else {
-            holder.tvAmount.setText("- ₹" + (int)tx.getAmount());
-            holder.tvAmount.setTextColor(Color.parseColor("#FF1744")); // Red
+            holder.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.text_primary)); // Black
+            holder.tvAmount.setText("- ₹" + (int)Math.abs(amount));
         }
     }
 

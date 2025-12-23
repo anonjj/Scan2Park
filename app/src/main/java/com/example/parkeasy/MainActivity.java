@@ -3,6 +3,7 @@ package com.example.parkeasy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,10 +15,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
+
     @Override
     protected void onStart() {
         super.onStart();
-        // AUTO-LOGIN: Check if user is already signed in
+        // AUTO-LOGIN: If user is already signed in, skip to Dashboard
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             goToDashboard();
         }
@@ -29,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // 1. Handle "Sign In" Button Click
+        // 1. Handle "Sign In" Button
         binding.btnLogin.setOnClickListener(v -> loginUser());
 
-        // 2. Handle "Sign Up" Link Click
+        // 2. Handle "Sign Up" Link
         binding.tvGoToSignUp.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
             startActivity(intent);
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        // Get inputs from the Cyberpunk UI
+        // Get inputs from the UI
         String email = binding.etEmail.getText().toString().trim();
         String password = binding.etPassword.getText().toString().trim();
 
@@ -54,17 +56,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Show a loading state (Optional: Disable button to prevent double-click)
+        // Show Loading State
         binding.btnLogin.setEnabled(false);
-        binding.btnLogin.setText("ACCESSING SYSTEM...");
+        binding.btnLogin.setText("Verifying...");
 
-        // Call our Firebase Engine
+        // Call Firebase Engine
         FirebaseManager.getInstance().loginUser(email, password, new FirebaseManager.FirestoreCallback<User>() {
             @Override
             public void onSuccess(User result) {
                 binding.btnLogin.setEnabled(true);
                 binding.btnLogin.setText("Sign In");
-                Toast.makeText(MainActivity.this, "Access Granted: " + result.getFullName(), Toast.LENGTH_SHORT).show();
                 goToDashboard();
             }
 
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 binding.btnLogin.setEnabled(true);
                 binding.btnLogin.setText("Sign In");
-                Toast.makeText(MainActivity.this, "Access Denied: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Login Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

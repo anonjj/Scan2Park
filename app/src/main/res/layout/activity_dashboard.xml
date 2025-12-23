@@ -5,32 +5,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#050A14"
+    android:background="@color/bg_app"
     tools:context=".DashboardActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_container">
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:paddingBottom="40dp">
+
+            <View
+                android:id="@+id/headerBg"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:background="@color/uber_black"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Good Morning"
-                android:textColor="#E0FFFF"
-                android:textSize="24sp"
-                android:fontFamily="sans-serif-medium"
-                android:shadowColor="#00FFF5"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="15"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:alpha="0.8"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,77 +44,60 @@
                 android:id="@+id/tvWelcome"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Welcome Back,\nJay Joshi"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:text="Welcome Back,\nDriver"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-black"
-                android:lineSpacingExtra="4dp"
-                android:shadowColor="#00FFF5"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="10"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintStart_toStartOf="@+id/tvGreeting"
                 app:layout_constraintTop_toBottomOf="@id/tvGreeting"
                 app:layout_constraintEnd_toStartOf="@+id/ivAvatarContainer"/>
 
-            <com.google.android.material.card.MaterialCardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/ivAvatarContainer"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                app:cardCornerRadius="32dp"
-                app:cardBackgroundColor="#111827"
-                app:strokeColor="#00FFF5"
-                app:strokeWidth="2dp"
-                app:cardElevation="15dp"
-                android:outlineAmbientShadowColor="#00FFF5"
-                android:outlineSpotShadowColor="#00FFF5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="24dp"
+                app:cardCornerRadius="25dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvGreeting"
-                app:layout_constraintBottom_toBottomOf="@id/tvWelcome">
+                app:layout_constraintTop_toTopOf="@+id/tvGreeting"
+                app:layout_constraintBottom_toBottomOf="@+id/tvWelcome">
 
                 <ImageView
                     android:id="@+id/ivAvatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_launcher_background"
-                    android:padding="2dp"
-                    app:tint="#E0FFFF" />
-            </com.google.android.material.card.MaterialCardView>
-
+                    android:src="@drawable/ic_person"
+                    android:padding="12dp"
+                    app:tint="@color/text_primary" />
+            </androidx.cardview.widget.CardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWallet"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="32dp"
                 app:cardCornerRadius="16dp"
-                app:strokeColor="#FF00FF"
-                app:strokeWidth="1dp"
-                app:cardElevation="20dp"
-                android:outlineAmbientShadowColor="#FF00FF"
-                android:outlineSpotShadowColor="#AA00FF"
-                android:theme="@style/Theme.MaterialComponents"                app:layout_constraintTop_toBottomOf="@id/tvWelcome"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@+id/tvWelcome">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_cyber_gradient"
                     android:padding="20dp">
 
                     <TextView
                         android:id="@+id/lblWallet"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="WALLET BALANCE"
-                        android:textColor="#E0FFFF"
+                        android:text="Total Balance"
+                        android:textColor="@color/text_secondary"
                         android:textSize="14sp"
-                        android:letterSpacing="0.1"
-                        android:fontFamily="sans-serif-medium"
-                        android:shadowColor="#FF00FF"
-                        android:shadowRadius="5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -117,155 +106,135 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="₹500.00"
-                        android:textColor="#00FFF5"
-                        android:textSize="36sp"
+                        android:text="₹0.00"
+                        android:textColor="@color/text_primary"
+                        android:textSize="32sp"
                         android:textStyle="bold"
-                        android:fontFamily="sans-serif-black"
-                        android:shadowColor="#00FFF5"
-                        android:shadowRadius="20"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/lblWallet" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAddMoney"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Money"
-                        android:textColor="#FF00FF"
-                        app:strokeColor="#FF00FF"
-                        app:strokeWidth="2dp"
-                        app:icon="@android:drawable/ic_input_add"
-                        app:iconTint="#FF00FF"
+                        android:text="+ Add Money"
+                        android:textColor="@color/brand_blue"
+                        android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <TextView
+                android:id="@+id/lblActions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/cardWallet"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <GridLayout
                 android:id="@+id/quickActionsGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="24dp"
                 android:columnCount="2"
                 android:rowCount="1"
-                app:layout_constraintTop_toBottomOf="@id/cardWallet">
+                app:layout_constraintTop_toBottomOf="@id/lblActions">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnBookParking"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardBackgroundColor="#111827"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#00FFF5"
-                    app:cardElevation="12dp"
-                    android:outlineAmbientShadowColor="#00FFF5"
-                    android:outlineSpotShadowColor="#00FFF5"
-                    >
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:gravity="center"
-                        android:padding="24dp">
+                        android:padding="16dp">
+
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:drawable/ic_menu_myplaces"
-                            app:tint="#00FFF5"/>
+                            android:src="@drawable/ic_car"
+                            app:tint="@color/brand_blue"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="16dp"
                             android:text="Book Parking"
-                            android:textColor="#FFFFFF"
+                            android:textColor="@color/text_primary"
                             android:textSize="16sp"
-                            android:fontFamily="sans-serif-medium"
-                            android:shadowColor="#00FFF5"
-                            android:shadowRadius="8"/>
+                            android:textStyle="bold"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnHistory"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="140dp"
                     android:layout_columnWeight="1"
                     android:layout_marginStart="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardBackgroundColor="#111827"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#FF00FF"
-                    app:cardElevation="12dp"
-                    android:outlineAmbientShadowColor="#FF00FF"
-                    android:outlineSpotShadowColor="#FF00FF">
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:gravity="center"
-                        android:padding="24dp">
+                        android:padding="16dp">
+
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:drawable/ic_menu_recent_history"
-                            app:tint="#FF00FF"/>
+                            android:src="@drawable/ic_history"
+                            app:tint="@color/brand_blue"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="Booking History"
-                            android:textColor="#FFFFFF"
+                            android:layout_marginTop="16dp"
+                            android:text="Recent Trips"
+                            android:textColor="@color/text_primary"
                             android:textSize="16sp"
-                            android:fontFamily="sans-serif-medium"
-                            android:shadowColor="#FF00FF"
-                            android:shadowRadius="8"/>
+                            android:textStyle="bold"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
             </GridLayout>
 
-            <GridLayout
-                android:id="@+id/statsGrid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:columnCount="2"
-                android:rowCount="1"
-                app:layout_constraintTop_toBottomOf="@id/quickActionsGrid">
-            </GridLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/bottom_navigation_container"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:cardBackgroundColor="#050A14"
-        app:strokeColor="#00FFF5"
-        app:strokeWidth="1dp"
-        app:cardElevation="25dp"
-        android:outlineAmbientShadowColor="#00FFF5"
-        android:outlineSpotShadowColor="#00FFF5"
-        app:cardCornerRadius="0dp">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#050A14"
-            app:itemIconTint="#E0FFFF"
-            app:itemTextColor="#E0FFFF"
-            app:menu="@menu/bottom_nav_menu"
-            app:labelVisibilityMode="labeled"/>
-    </com.google.android.material.card.MaterialCardView>
+        android:background="@color/white"
+        app:elevation="8dp"
+        app:itemIconTint="@color/brand_blue"
+        app:itemTextColor="@color/brand_blue"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,66 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Neon Theme Colors (New & Merged) -->
-    <color name="neon_pink">#FF00FF</color>
-    <color name="neon_cyan">#00E5FF</color>
-    <color name="neon_purple">#D500F9</color>
-    <color name="neon_green">#00FF00</color>
-    <color name="neon_orange">#FF3D00</color>
-    <color name="neon_blue">#0080FF</color>
-    <color name="neon_yellow">#FFFF00</color>
-    <color name="neon_cyan_dim">#3300F3FF</color>
+    <!-- Uber-Inspired Modern Palette -->
+    <color name="uber_black">#000000</color>
+    <color name="uber_white">#FFFFFF</color>
+    <color name="uber_blue">#276EF1</color>
+    <color name="uber_green">#06C167</color>
+    <color name="uber_red">#E11900</color>
+    <color name="uber_grey_light">#F6F6F6</color>
+    <color name="uber_grey_medium">#E2E2E2</color>
+    <color name="uber_grey_dark">#545454</color>
 
-    <!-- Glow Effects -->
-    <color name="neon_cyan_glow">#40FFFFFF</color>
-    <color name="neon_pink_glow">#40FF00FF</color>
-    <color name="neon_green_glow">#4000FF00</color>
-
-    <!-- Dark Theme Backgrounds (New & Merged) -->
-    <color name="background_dark">#0A0E27</color>
-    <color name="background_dark_alt">#1A1F3A</color>
-    <color name="card_dark">#121212</color>
-    <color name="card_dark_elevated">#1F2A48</color>
-    <color name="dark_surface">#0A0A0F</color>
-    <color name="cyber_black">#050812</color>
-    <color name="cyber_surface">#111526</color>
-    <color name="cyber_header_bg">#1A2238</color>
-    <color name="cyber_card_bg">#2A3A59</color>
-
-    <!-- Text Colors -->
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#8F9BB3</color>
-    <color name="cyber_text_secondary">#8A8A9D</color>
-    <color name="text_neon_secondary">#B0BEC5</color>
-    <color name="text_hint">#9E9E9E</color>
-    <color name="text_neon_hint">#80FFFFFF</color>
-
-    <!-- Gradient & Shadow Colors -->
-    <color name="gradient_start">#0A0E27</color>
-    <color name="gradient_middle">#1A1F3A</color>
-    <color name="gradient_end">#2D1B4E</color>
-    <color name="shadow_pink">#40FF006E</color>
-    <color name="shadow_cyan">#4000F0FF</color>
-    <color name="shadow_purple">#40B026FF</color>
-
-    <!-- Standard & Material Design Colors -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFF</color>
+    <!-- Brand Mapping -->
+    <color name="brand_primary">@color/uber_black</color>
+    <color name="brand_secondary">@color/uber_green</color>
+    <color name="brand_accent">@color/uber_blue</color>
+    <color name="brand_blue">@color/uber_blue</color>
+    
+    <color name="bg_app">@color/uber_grey_light</color>
+    <color name="bg_card">@color/uber_white</color>
+    <color name="bg_input">@color/uber_grey_light</color>
+    
+    <color name="text_primary">@color/uber_black</color>
+    <color name="text_secondary">@color/uber_grey_dark</color>
+    <color name="text_hint">#AFAFAF</color>
+    
+    <color name="white">@color/uber_white</color>
+    <color name="black">@color/uber_black</color>
     <color name="transparent">#00000000</color>
-    <color name="primary">#2196F3</color>
-    <color name="primary_dark">#1976D2</color>
-    <color name="primary_light">#BBDEFB</color>
-    <color name="accent">#FF5722</color>
-    <color name="light_gray">#D3D3D3</color>
-    <color name="background">#FFFFFF</color>
-    <color name="surface">#F5F5F5</color>
-    <color name="icon_tint">#616161</color>
-    <color name="divider">#E0E0E0</color>
+    <color name="divider">@color/uber_grey_medium</color>
+    <color name="stroke_grey">@color/uber_grey_medium</color>
+    <color name="success_bg">#E7F9EF</color>
+    <color name="error_red">@color/uber_red</color>
+
+    <!-- Gradient Colors (Modern Gradients) -->
+    <color name="gradient_start">@color/uber_black</color>
+    <color name="gradient_middle">#1A1A1A</color>
+    <color name="gradient_end">#2C2C2C</color>
+
+    <!-- Legacy / Compatibility Mappings -->
+    <color name="neon_cyan">@color/uber_blue</color>
+    <color name="neon_green">@color/uber_green</color>
+    <color name="neon_pink">@color/uber_red</color>
+    <color name="neon_orange">#FF8800</color>
+    <color name="neon_purple">@color/uber_black</color>
+    <color name="neon_red">@color/uber_red</color>
+    
+    <color name="background_dark">@color/bg_app</color>
+    <color name="background_dark_alt">@color/bg_input</color>
+    <color name="dark_surface">@color/bg_card</color>
+    <color name="card_dark">@color/bg_card</color>
+    <color name="cyber_black">@color/uber_black</color>
+    <color name="cyber_surface">@color/bg_card</color>
+    
+    <color name="cyber_text_secondary">@color/text_secondary</color>
+    <color name="text_neon_secondary">@color/text_secondary</color>
+    <color name="text_neon_hint">@color/text_hint</color>
+    
+    <color name="neon_cyan_dim">#1A276EF1</color>
+    <color name="neon_cyan_transparent">#33276EF1</color>
 
     <!-- App-specific Status Colors -->
-    <color name="slot_occupied">#FF5252</color>
-    <color name="slot_selected">#4CAF50</color>
-    <color name="slot_available">#E0E0E0</color>
-    <color name="success">#4CAF50</color>
-    <color name="error">#F44336</color>
-    <color name="warning">#FF9800</color>
+    <color name="slot_occupied">@color/uber_grey_medium</color>
+    <color name="slot_selected">@color/uber_black</color>
+    <color name="slot_available">@color/uber_green</color>
+    <color name="success">@color/uber_green</color>
+    <color name="error">@color/uber_red</color>
+    <color name="warning">#FFC107</color>
 </resources>

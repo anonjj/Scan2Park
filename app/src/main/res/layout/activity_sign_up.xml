@@ -5,324 +5,180 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/bg_neon_gradient">
+    android:background="@color/uber_white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="40dp">
 
-        <!-- Neon Glow Effect Card Container -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardContainer"
+        <TextView
+            android:id="@+id/tvHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create your\naccount"
+            android:textSize="34sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign up to start parking smarter."
+            android:textSize="16sp"
+            android:textColor="@color/text_secondary"
+            android:fontFamily="sans-serif"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/formContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            app:strokeColor="@color/neon_cyan"
-            app:strokeWidth="2dp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="40dp">
+            android:orientation="vertical"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="24dp">
+                android:hint="Full Name"
+                app:hintTextColor="@color/text_secondary"
+                app:boxStrokeColor="@color/uber_black"
+                app:boxStrokeWidthFocused="2dp"
+                app:startIconDrawable="@drawable/ic_person"
+                app:startIconTint="@color/text_primary"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxBackgroundColor="@color/uber_white">
 
-                <!-- Neon Logo/Icon -->
-                <ImageView
-                    android:id="@+id/ivLogo"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_profile"
-                    android:contentDescription="@string/app_logo"
-                    app:tint="@color/neon_pink"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
-                <!-- Glowing Header Title -->
-                <TextView
-                    android:id="@+id/tvHeaderTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CREATE ACCOUNT"
-                    android:textSize="32sp"
-                    android:textColor="@color/neon_pink"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-condensed"
-                    android:letterSpacing="0.1"
-                    android:shadowColor="@color/neon_pink"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
-                    android:shadowRadius="10"
-                    app:layout_constraintTop_toBottomOf="@id/ivLogo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="16dp"/>
-
-                <!-- Neon Subtitle -->
-                <TextView
-                    android:id="@+id/tvSubtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="// Enter your details to continue"
-                    android:textSize="14sp"
-                    android:textColor="@color/neon_cyan"
-                    android:fontFamily="monospace"
-                    app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="8dp"/>
-
-                <!-- Decorative Line -->
-                <View
-                    android:id="@+id/vDividerTop"
-                    android:layout_width="100dp"
-                    android:layout_height="2dp"
-                    android:background="@drawable/gradient_neon_line"
-                    app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="20dp"/>
-
-                <!-- Full Name Input -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilFullName"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="FULL NAME"
-                    app:boxStrokeColor="@color/neon_purple"
-                    app:boxStrokeWidth="2dp"
-                    app:hintTextColor="@color/neon_purple"
-                    app:startIconDrawable="@drawable/ic_person"
-                    app:startIconTint="@color/neon_purple"
-                    android:textColorHint="@color/text_neon_hint"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:layout_constraintTop_toBottomOf="@id/vDividerTop"
-                    android:layout_marginTop="28dp">
+                    android:inputType="textPersonName|textCapWords"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFullName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName|textCapWords"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:maxLines="1"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Mobile Number Input -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilMobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="MOBILE NUMBER"
-                    app:boxStrokeColor="@color/neon_green"
-                    app:boxStrokeWidth="2dp"
-                    app:hintTextColor="@color/neon_green"
-                    app:startIconDrawable="@drawable/ic_phone"
-                    app:startIconTint="@color/neon_green"
-                    app:prefixText="+91 "
-                    app:prefixTextColor="@color/neon_green"
-                    android:textColorHint="@color/text_neon_hint"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:layout_constraintTop_toBottomOf="@id/tilFullName"
-                    android:layout_marginTop="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMobile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="phone"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:maxLines="1"
-                        android:maxLength="10"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Email Input -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="EMAIL ADDRESS"
-                    app:boxStrokeColor="@color/neon_cyan"
-                    app:boxStrokeWidth="2dp"
-                    app:hintTextColor="@color/neon_cyan"
-                    app:startIconDrawable="@drawable/ic_email"
-                    app:startIconTint="@color/neon_cyan"
-                    android:textColorHint="@color/text_neon_hint"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:layout_constraintTop_toBottomOf="@id/tilMobile"
-                    android:layout_marginTop="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmailSign"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:maxLines="1"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Password Input -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="PASSWORD"
-                    app:boxStrokeColor="@color/neon_orange"
-                    app:boxStrokeWidth="2dp"
-                    app:hintTextColor="@color/neon_orange"
-                    app:startIconDrawable="@drawable/ic_lock"
-                    app:startIconTint="@color/neon_orange"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/neon_orange"
-                    android:textColorHint="@color/text_neon_hint"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:layout_constraintTop_toBottomOf="@id/tilEmail"
-                    android:layout_marginTop="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPasswordSign"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:maxLines="1"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Password Requirements -->
-                <TextView
-                    android:id="@+id/tvPasswordHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚡ Min. 6 characters required"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_neon_hint"
-                    android:fontFamily="monospace"
-                    app:layout_constraintTop_toBottomOf="@id/tilPassword"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="6dp"/>
-
-                <!-- Neon Sign Up Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSignUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:text="CREATE ACCOUNT"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"
-                    android:background="@drawable/btn_neon_gradient"
-                    android:textColor="@color/white"
-                    app:cornerRadius="30dp"
-                    app:elevation="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvPasswordHint"
-                    android:layout_marginTop="28dp"/>
-
-                <!-- Neon Pulse Effect Text -->
-                <TextView
-                    android:id="@+id/tvPulseEffect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚡ SECURED WITH ENCRYPTION ⚡"
-                    android:textSize="10sp"
-                    android:textColor="@color/neon_green"
-                    android:fontFamily="monospace"
-                    android:shadowColor="@color/neon_green"
-                    android:shadowRadius="5"
-                    app:layout_constraintTop_toBottomOf="@id/btnSignUp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="12dp"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Neon Divider with "OR" -->
-        <LinearLayout
-            android:id="@+id/llDivider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/cardContainer"
-            android:layout_marginTop="24dp">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@drawable/gradient_neon_line"/>
-
-            <TextView
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilMobile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="OR"
-                android:textSize="14sp"
-                android:textColor="@color/neon_cyan"
-                android:textStyle="bold"
-                android:fontFamily="monospace"
-                android:shadowColor="@color/neon_cyan"
-                android:shadowRadius="8"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"/>
+                android:layout_marginTop="16dp"
+                android:hint="Mobile Number"
+                app:hintTextColor="@color/text_secondary"
+                app:boxStrokeColor="@color/uber_black"
+                app:startIconDrawable="@drawable/ic_phone"
+                app:startIconTint="@color/text_primary"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@drawable/gradient_neon_line"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:maxLength="10"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Email Address"
+                app:hintTextColor="@color/text_secondary"
+                app:boxStrokeColor="@color/uber_black"
+                app:startIconDrawable="@drawable/ic_email"
+                app:startIconTint="@color/text_primary"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmailSign"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Password"
+                app:hintTextColor="@color/text_secondary"
+                app:boxStrokeColor="@color/uber_black"
+                app:startIconDrawable="@drawable/ic_lock"
+                app:startIconTint="@color/text_primary"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/text_secondary"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPasswordSign"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
-        <!-- Already Have Account Section -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:text="Sign Up"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/uber_black"
+            android:textColor="@color/uber_white"
+            app:cornerRadius="12dp"
+            app:elevation="0dp"
+            app:layout_constraintTop_toBottomOf="@id/formContainer" />
+
         <LinearLayout
-            android:id="@+id/llSignIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@drawable/bg_neon_border"
-            android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/llDivider"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="32dp">
+            app:layout_constraintTop_toBottomOf="@id/btnSignUp"
+            app:layout_constraintVertical_bias="1.0">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ALREADY REGISTERED? "
-                android:textSize="13sp"
-                android:textColor="@color/text_neon_secondary"
-                android:fontFamily="monospace"/>
+                android:text="Already have an account? "
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tvSignIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="⚡ SIGN IN"
-                android:textSize="13sp"
-                android:textColor="@color/neon_pink"
+                android:text="Sign in"
+                android:textColor="@color/brand_blue"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:fontFamily="monospace"
-                android:shadowColor="@color/neon_pink"
-                android:shadowRadius="6"
                 android:clickable="true"
-                android:focusable="true"/>
-
+                android:foreground="?attr/selectableItemBackground" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

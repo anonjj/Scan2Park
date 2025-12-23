@@ -2,19 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_cyber_gradient"
-    android:padding="24dp">
+    android:background="@color/bg_app"
+    android:paddingTop="24dp">
 
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginStart="24dp"
         android:src="@drawable/ic_arrow_back"
-        app:tint="@color/neon_cyan"
-        android:background="@drawable/input_field_bg"
+        app:tint="@color/text_primary"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -23,12 +23,11 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ACCESS LOGS"
-        android:textColor="@color/white"
-        android:textSize="20sp"
+        android:text="Booking History"
+        android:textColor="@color/text_primary"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:letterSpacing="0.1"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"/>
@@ -38,38 +37,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:paddingHorizontal="24dp"
         app:layout_constraintTop_toBottomOf="@id/btnBack">
 
-        <EditText
-            android:id="@+id/etSearch"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardSearch"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/input_field_bg"
-            android:hint="Search Booking ID..."
-            android:textColor="#FFFFFF"
-            android:textColorHint="#70FFFFFF"
-            android:textSize="14sp"
-            android:paddingStart="48dp"
-            android:paddingEnd="16dp"
-            android:inputType="text"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="1dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_search"
-            app:tint="@color/neon_cyan"
-            android:layout_marginStart="12dp"
-            app:layout_constraintStart_toStartOf="@id/etSearch"
-            app:layout_constraintTop_toTopOf="@id/etSearch"
-            app:layout_constraintBottom_toBottomOf="@id/etSearch"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_menu_search"
+                    app:tint="@color/text_secondary"/>
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="Search by Booking ID..."
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:inputType="text"
+                    android:maxLines="1"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:scrollbars="none"
-            app:layout_constraintTop_toBottomOf="@id/etSearch">
+            app:layout_constraintTop_toBottomOf="@id/cardSearch">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
@@ -84,27 +99,44 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ALL"
-                    android:textColor="@color/white"
-                    app:chipBackgroundColor="@color/card_dark"/>
+                    android:text="All"
+                    android:textColor="@color/text_primary"
+                    app:chipBackgroundColor="@color/white"
+                    app:chipStrokeColor="#E0E0E0"
+                    app:chipStrokeWidth="1dp"/>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipActive"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ACTIVE"
-                    android:textColor="#00FF88"
-                    app:chipBackgroundColor="@color/card_dark"/>
+                    android:text="Active"
+                    android:textColor="@color/brand_primary"
+                    app:chipBackgroundColor="@color/white"
+                    app:chipStrokeColor="#E0E0E0"
+                    app:chipStrokeWidth="1dp"/>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCompleted"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="COMPLETED"
-                    android:textColor="#00F0FF"
-                    app:chipBackgroundColor="@color/card_dark"/>
+                    android:text="Completed"
+                    android:textColor="@color/brand_secondary"
+                    app:chipBackgroundColor="@color/white"
+                    app:chipStrokeColor="#E0E0E0"
+                    app:chipStrokeWidth="1dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCancelled"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancelled"
+                    android:textColor="@color/error_red"
+                    app:chipBackgroundColor="@color/white"
+                    app:chipStrokeColor="#E0E0E0"
+                    app:chipStrokeWidth="1dp"/>
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,6 +147,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
+        android:paddingBottom="16dp"
         app:layout_constraintTop_toBottomOf="@id/filterSection"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -131,19 +164,19 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@android:drawable/ic_menu_recent_history"
-            app:tint="#30FFFFFF"/>
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_history"
+            app:tint="@color/text_secondary"
+            android:alpha="0.5"/>
 
         <TextView
             android:id="@+id/tvNoBookings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NO DATA FOUND"
-            android:textColor="#30FFFFFF"
+            android:text="No bookings found"
+            android:textColor="@color/text_secondary"
             android:textStyle="bold"
-            android:letterSpacing="0.1"
             android:layout_marginTop="16dp"/>
     </LinearLayout>
 
@@ -151,7 +184,7 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint="@color/neon_cyan"
+        android:indeterminateTint="@color/brand_primary"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

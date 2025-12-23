@@ -122,8 +122,7 @@ public class SlotSelectionActivity extends AppCompatActivity {
                         Collections.sort(slotList, (s1, s2) -> extractInt(s1.getName()) - extractInt(s2.getName()));
 
                         if (adapter != null) {
-                            adapter.setSlots(slotList); // Give the data to the adapter!
-                            adapter.notifyDataSetChanged();
+                            adapter.submitList(slotList); // Use submitList instead of setSlots
                         }
                     } else {
                         Toast.makeText(this, "No slots found for this location", Toast.LENGTH_SHORT).show();
@@ -173,7 +172,7 @@ public class SlotSelectionActivity extends AppCompatActivity {
                     String userName = user.getDisplayName() != null ? user.getDisplayName() : "Driver";
 
                     // 🚀 FIRE THE DYNAMIC EMAIL
-                    EmailService.sendBookingReceipt(user.getEmail(), receiptBooking, userName);
+                    //EmailService.sendBookingReceipt(user.getEmail(), receiptBooking, userName);
                 }
 
                 // 3. Navigate to Success Screen

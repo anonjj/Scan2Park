@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_cyber_gradient"
+    android:background="@color/bg_app"
     android:padding="24dp">
 
     <ImageView
@@ -13,8 +12,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_arrow_back"
-        app:tint="@color/neon_cyan"
-        android:background="@drawable/input_field_bg"
+        app:tint="@color/text_primary"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -23,62 +22,82 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DIGITAL WALLET"
-        android:textColor="@color/white"
-        android:textSize="20sp"
+        android:text="My Wallet"
+        android:textColor="@color/text_primary"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:letterSpacing="0.1"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"/>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardBalance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:cardCornerRadius="24dp"
-        app:cardBackgroundColor="#1A1F3A"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/brand_primary"
         app:layout_constraintTop_toBottomOf="@id/btnBack">
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center">
+            android:padding="24dp">
 
             <TextView
+                android:id="@+id/lblTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TOTAL BALANCE"
-                android:textColor="#7A8BA0"
-                android:textSize="12sp"
-                android:letterSpacing="0.2"/>
+                android:text="Available Balance"
+                android:textColor="#CCFFFFFF"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_wallet"
+                app:tint="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/tvWalletBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="₹0.00"
-                android:textColor="#00FF88"
-                android:textSize="48sp"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp"
                 android:textStyle="bold"
-                android:shadowColor="#00FF88"
-                android:shadowRadius="16"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lblTotal"/>
+
+            <TextView
+                android:id="@+id/tvCardNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="**** **** **** 1234"
+                android:textColor="#80FFFFFF"
+                android:textSize="14sp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvWalletBalance"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/lblAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TOP-UP CREDITS"
-        android:textColor="#FF00FF"
-        android:layout_marginTop="32dp"
+        android:text="Top Up"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
         android:textStyle="bold"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardBalance"/>
 
@@ -90,38 +109,44 @@
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/lblAdd">
 
-        <EditText
-            android:id="@+id/etAmount"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Enter Amount (e.g. 500)"
-            android:inputType="number"
-            android:textColor="@color/white"
-            android:textColorHint="#50FFFFFF"
-            android:background="@drawable/input_field_bg"
-            android:paddingHorizontal="16dp"/>
+            android:hint="Amount (₹)"
+            app:hintTextColor="@color/text_secondary"
+            app:boxStrokeColor="@color/uber_black"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColor="@color/text_primary"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddMoney"
             android:layout_width="wrap_content"
-            android:layout_height="55dp"
-            android:text="ADD"
+            android:layout_height="56dp"
+            android:layout_marginStart="12dp"
+            android:text="Add"
             android:textStyle="bold"
-            android:textColor="#000"
-            android:background="@drawable/btn_gradient_primary"
-            android:backgroundTint="#00FF88"
-            android:layout_marginStart="12dp"/>
+            app:cornerRadius="8dp"
+            android:backgroundTint="@color/uber_black"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/lblHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RECENT TRANSACTIONS"
-        android:textColor="#FFFFFF"
-        android:layout_marginTop="32dp"
+        android:text="Recent Transactions"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
         android:textStyle="bold"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/inputContainer"/>
 

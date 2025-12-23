@@ -33,10 +33,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         ParkingLocation location = locationList.get(position);
-        holder.binding.tvLocationName.setText(location.getName());
-        holder.binding.tvAddress.setText(location.getAddress());
-        holder.binding.tvSlotsInfo.setText(location.getTotalSlots() + " Slots Total");
 
+        // 1. Bind Name & Address (Updated IDs)
+        holder.binding.tvLocName.setText(location.getName());
+        holder.binding.tvLocAddress.setText(location.getAddress());
+
+        // 2. Bind Price (The new Modern UI highlights this!)
+        // Note: Assuming your ParkingLocation model has getRate() or getRatePerHour()
+        // If not, just put a placeholder like "₹40/hr"
+        int rate = location.getRatePerHour();
+        holder.binding.tvRate.setText("₹" + rate + "/hr");
+
+        // 3. Click Listener
         holder.itemView.setOnClickListener(v -> listener.onLocationClick(location));
     }
 

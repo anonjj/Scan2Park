@@ -1,139 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:backgroundTint="#151932">
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@color/white"
+    app:strokeColor="#E0E0E0"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="12dp"> <View
-        android:id="@+id/viewStatusColor"
-        android:layout_width="6dp"
-        android:layout_height="0dp"
-        android:background="#00FF88"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:padding="16dp">
+
+        <FrameLayout
+            android:id="@+id/iconContainer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_dark"
+            android:backgroundTint="#F5F5F5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_car"
+                app:tint="@color/text_primary"
+                android:layout_gravity="center"/>
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvSlotName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="A4"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
+            android:text="Slot A-04"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toEndOf="@id/viewStatusColor"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/tvLocationName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Neon Cyber Mall"
-            android:textColor="#7A8BA0"
-            android:textSize="14sp"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintStart_toEndOf="@id/tvSlotName"
-            app:layout_constraintTop_toTopOf="@id/tvSlotName"
-            app:layout_constraintBottom_toBottomOf="@id/tvSlotName"
-            app:layout_constraintEnd_toStartOf="@id/tvPrice"/>
+            app:layout_constraintStart_toEndOf="@id/iconContainer"
+            app:layout_constraintTop_toTopOf="@id/iconContainer"
+            app:layout_constraintBottom_toBottomOf="@id/iconContainer"
+            app:layout_constraintVertical_bias="0.4"/>
 
         <TextView
-            android:id="@+id/tvPrice"
+            android:id="@+id/tvBookingId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="₹120"
-            android:textColor="#00F0FF"
+            android:text="ID: #BK998822"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/iconContainer"
+            app:layout_constraintTop_toBottomOf="@id/tvSlotName"
+            android:layout_marginStart="12dp"/>
+
+        <TextView
+            android:id="@+id/tvCost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₹80"
+            android:textColor="@color/text_primary"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginEnd="16dp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvSlotName"
-            app:layout_constraintBottom_toBottomOf="@id/tvSlotName"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <View
             android:id="@+id/divider"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#2A3145"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toEndOf="@id/viewStatusColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSlotName"/>
+            android:background="#E0E0E0"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/iconContainer"/>
 
         <TextView
-            android:id="@+id/tvDate"
+            android:id="@+id/tvLocationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="19 Dec, 02:30 PM"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintStart_toEndOf="@id/viewStatusColor"
+            android:text="Park Easy Zone"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"/>
+
+        <LinearLayout
+            android:id="@+id/timeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLocationLabel">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_history"
+                app:tint="@color/text_secondary"/>
+
+            <TextView
+                android:id="@+id/tvTimeRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today, 14:00 - 16:00"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:layout_marginStart="6dp"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ACTIVE"
-            android:textSize="10sp"
+            android:textColor="@color/brand_primary"
+            android:textSize="11sp"
             android:textStyle="bold"
-            android:textColor="#00FF88"
-            android:background="@drawable/input_field_bg"
-            android:paddingHorizontal="8dp"
+            android:background="@drawable/bg_card_modern"
+            android:backgroundTint="#E3F2FD"
+            android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvDate"
-            app:layout_constraintBottom_toBottomOf="@id/tvDate"/>
+            app:layout_constraintTop_toBottomOf="@id/divider"/>
 
         <LinearLayout
             android:id="@+id/layoutActions"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/tvDate"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDate">
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/timeLayout">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnCancel"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExtend"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CANCEL"
-                android:textSize="12sp"
-                android:textColor="#FF0055"
-                android:background="@drawable/input_field_bg"
+                android:text="Extend"
+                android:textColor="@color/brand_primary"
+                app:strokeColor="@color/brand_primary"
+                app:strokeWidth="1dp"
                 android:layout_marginEnd="8dp"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnExtend"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="EXTEND"
-                android:textSize="12sp"
-                android:textColor="#000000"
-                android:backgroundTint="#00FF88"
-                android:background="@drawable/btn_gradient_primary"/>
-
+                android:text="Cancel"
+                android:textColor="@color/error_red"
+                app:strokeColor="@color/error_red"
+                app:strokeWidth="1dp"
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
 
+        <View
+            android:id="@+id/statusStrip"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+
+</com.google.android.material.card.MaterialCardView>

@@ -8,12 +8,16 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.work.WorkManager; // ✅ Import WorkManager
+
 import com.example.parkeasy.adapter.BookingHistoryAdapter;
 import com.example.parkeasy.data.FirebaseManager;
 import com.example.parkeasy.databinding.ActivityBookingHistoryBinding;
 import com.example.parkeasy.model.Booking;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class BookingHistoryActivity extends AppCompatActivity implements BookingHistoryAdapter.OnBookingActionListener {
@@ -37,7 +41,6 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
 
     private void setupUI() {
         binding.recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
-        // Pass 'this' as the listener since we implemented the interface
         adapter = new BookingHistoryAdapter(this, filteredBookings, this);
         binding.recyclerHistory.setAdapter(adapter);
 
@@ -52,37 +55,61 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
             }
         });
 
+        // Set default selection
+        binding.chipAll.setChecked(true);
+
         binding.chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.contains(R.id.chipActive)) currentFilter = "ACTIVE";
-            else if (checkedIds.contains(R.id.chipCompleted)) currentFilter = "COMPLETED";
-            else currentFilter = "ALL";
+            if (checkedIds.contains(R.id.chipActive)) {
+                currentFilter = "ACTIVE";
+            } else if (checkedIds.contains(R.id.chipCompleted)) {
+                currentFilter = "COMPLETED";
+            } else if (checkedIds.contains(R.id.chipCancelled)) {
+                currentFilter = "CANCELLED";
+            } else {
+                currentFilter = "ALL";
+            }
             applyFilters();
         });
     }
 
-    // --- 🚀 INTERFACE IMPLEMENTATION ---
-
     @Override
     public void onItemClick(Booking booking) {
-        // Open Receipt
         Intent intent = new Intent(this, BookingSummaryActivity.class);
         intent.putExtra("BOOKING_ID", booking.getBookingId());
         intent.putExtra("SLOT_NAME", booking.getSlotName());
         intent.putExtra("LOCATION_NAME", booking.getLocationName());
         intent.putExtra("TOTAL_COST", booking.getTotalCost());
+
+        if (booking.getStartTime() != null) {
+            intent.putExtra("START_TIME", booking.getStartTime().getTime());
+        }
+        if (booking.getEndTime() != null) {
+            intent.putExtra("END_TIME", booking.getEndTime().getTime());
+        }
+        // Pass duration for calculations
+        intent.putExtra("DURATION", booking.getDurationHours());
+
         startActivity(intent);
     }
 
     @Override
     public void onCancelClick(Booking booking) {
-        // ⚠️ Call Firebase Cancel Logic
         binding.progressBar.setVisibility(View.VISIBLE);
+
+        // 1. Call Firebase Manager
         FirebaseManager.getInstance().cancelBooking(booking.getBookingId(), booking.getSlotId(), new FirebaseManager.FirestoreCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
                 if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
-                Toast.makeText(BookingHistoryActivity.this, "Booking Cancelled!", Toast.LENGTH_SHORT).show();
+
+                // 2. 🛑 KILL NOTIFICATIONS (Clean Logic)
+                // We try to cancel by Specific ID (Best Practice) AND Generic Tags (Safety Net)
+                WorkManager.getInstance(BookingHistoryActivity.this).cancelAllWorkByTag(booking.getBookingId());
+                WorkManager.getInstance(BookingHistoryActivity.this).cancelAllWorkByTag("parking_reminder");
+                WorkManager.getInstance(BookingHistoryActivity.this).cancelAllWorkByTag("parking_overtime");
+
+                Toast.makeText(BookingHistoryActivity.this, "Booking Cancelled & Alarms Stopped", Toast.LENGTH_SHORT).show();
                 loadBookingsFromFirebase(); // Refresh List
             }
 
@@ -97,7 +124,6 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
 
     @Override
     public void onExtendClick(Booking booking) {
-        // ⚠️ Call Firebase Extend Logic (Adding 1 Hour, +₹40 Cost)
         binding.progressBar.setVisibility(View.VISIBLE);
         int extensionCost = 40;
 
@@ -106,8 +132,13 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
             public void onSuccess(String result) {
                 if (isFinishing() || isDestroyed()) return;
                 binding.progressBar.setVisibility(View.GONE);
-                Toast.makeText(BookingHistoryActivity.this, "Extended by 1 Hour!", Toast.LENGTH_SHORT).show();
-                loadBookingsFromFirebase(); // Refresh List
+
+                // 🛑 STOP OLD ALARMS (Because we extended time, the old "15 min left" warning is invalid)
+                WorkManager.getInstance(BookingHistoryActivity.this).cancelAllWorkByTag(booking.getBookingId());
+                WorkManager.getInstance(BookingHistoryActivity.this).cancelAllWorkByTag("parking_reminder");
+
+                Toast.makeText(BookingHistoryActivity.this, "Extended by 1 Hour! (Old Alarms Reset)", Toast.LENGTH_SHORT).show();
+                loadBookingsFromFirebase();
             }
 
             @Override
@@ -119,7 +150,6 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
         });
     }
 
-    // ... (loadBookingsFromFirebase & applyFilters remain same as previous response) ...
     private void loadBookingsFromFirebase() {
         binding.progressBar.setVisibility(View.VISIBLE);
         FirebaseManager.getInstance().getUserBookings(new FirebaseManager.FirestoreCallback<List<Booking>>() {
@@ -129,7 +159,10 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
                 binding.progressBar.setVisibility(View.GONE);
                 allBookings.clear();
                 allBookings.addAll(result);
-                Collections.sort(allBookings, (b1, b2) -> b2.getStartTime().compareTo(b1.getStartTime()));
+                Collections.sort(allBookings, (b1, b2) -> {
+                    if (b1.getStartTime() == null || b2.getStartTime() == null) return 0;
+                    return b2.getStartTime().compareTo(b1.getStartTime());
+                });
                 applyFilters();
             }
             @Override
@@ -142,13 +175,46 @@ public class BookingHistoryActivity extends AppCompatActivity implements Booking
 
     private void applyFilters() {
         filteredBookings.clear();
+        Date now = new Date();
+
         for (Booking b : allBookings) {
+            // Search filter
             boolean matchesSearch = b.getBookingId().toLowerCase().contains(currentSearch) ||
-                    b.getLocationName().toLowerCase().contains(currentSearch);
-            boolean matchesType = currentFilter.equals("ALL") ||
-                    (b.getStatus() != null && b.getStatus().equalsIgnoreCase(currentFilter));
-            if (matchesSearch && matchesType) filteredBookings.add(b);
+                    (b.getLocationName() != null && b.getLocationName().toLowerCase().contains(currentSearch));
+
+            // Status filter logic
+            boolean matchesStatus = false;
+            String status = b.getStatus() != null ? b.getStatus().toUpperCase() : "";
+            boolean isCancelled = status.equals("CANCELLED");
+
+            if (currentFilter.equals("ALL")) {
+                matchesStatus = true;
+            } else if (currentFilter.equals("ACTIVE")) {
+                boolean isTimeActive = b.getEndTime() != null && b.getEndTime().after(now);
+                boolean isStatusActive = status.equals("ACTIVE") || status.equals("EXTENDED") || status.equals("CONFIRMED");
+                matchesStatus = !isCancelled && isStatusActive && isTimeActive;
+            } else if (currentFilter.equals("COMPLETED")) {
+                boolean isTimePassed = b.getEndTime() != null && b.getEndTime().before(now);
+                boolean isStatusCompleted = status.equals("COMPLETED");
+                matchesStatus = !isCancelled && (isStatusCompleted || isTimePassed);
+            } else if (currentFilter.equals("CANCELLED")) {
+                matchesStatus = isCancelled;
+            }
+
+            if (matchesSearch && matchesStatus) {
+                filteredBookings.add(b);
+            }
         }
+
+        // Update UI empty state
+        if (filteredBookings.isEmpty()) {
+            binding.layoutNoBookings.setVisibility(View.VISIBLE);
+            binding.recyclerHistory.setVisibility(View.GONE);
+        } else {
+            binding.layoutNoBookings.setVisibility(View.GONE);
+            binding.recyclerHistory.setVisibility(View.VISIBLE);
+        }
+
         adapter.notifyDataSetChanged();
     }
 }

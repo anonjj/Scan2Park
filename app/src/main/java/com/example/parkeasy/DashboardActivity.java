@@ -27,7 +27,7 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        //com.example.parkeasy.data.ParkingSeeder.seedData();
+        //com.example.parkeasy.data.ParkingSeeder.seedData();  <----- uncomment this
 
         // Set a dynamic greeting based on the time of day (Morning/Evening).
         binding.tvGreeting.setText(getGreeting());
@@ -37,6 +37,12 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Fetch user-specific data to populate the UI (Wallet, Name).
         loadUserData();
+        //Makes sure that the android is android 13
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
     }
 
     private void setupClickListeners() {
