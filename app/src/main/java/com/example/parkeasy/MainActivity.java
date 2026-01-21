@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.parkeasy.data.FirebaseManager;
 import com.example.parkeasy.databinding.ActivityLoginBinding;
 import com.example.parkeasy.model.User;
+import com.example.parkeasy.util.NetworkUtils;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +23,20 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // AUTO-LOGIN: If user is already signed in, skip to Dashboard
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            goToDashboard();
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseFirestore.getInstance().collection("owners").document(uid)
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (snapshot.exists()) {
+                            Intent intent = new Intent(MainActivity.this, OwnerDashboardActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            goToDashboard();
+                        }
+                    })
+                    .addOnFailureListener(e -> goToDashboard());
         }
     }
 
@@ -37,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
         // 2. Handle "Sign Up" Link
         binding.tvGoToSignUp.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+            startActivity(intent);
+        });
+
+        binding.tvOwnerLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, OwnerLoginActivity.class);
             startActivity(intent);
         });
     }
@@ -59,6 +79,13 @@ public class MainActivity extends AppCompatActivity {
         // Show Loading State
         binding.btnLogin.setEnabled(false);
         binding.btnLogin.setText("Verifying...");
+
+        if (!NetworkUtils.isOnline(this)) {
+            binding.btnLogin.setEnabled(true);
+            binding.btnLogin.setText("Sign In");
+            Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Call Firebase Engine
         FirebaseManager.getInstance().loginUser(email, password, new FirebaseManager.FirestoreCallback<User>() {

@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.parkeasy.R;
 import com.example.parkeasy.model.Transaction;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TxViewHolder> {
@@ -19,6 +21,59 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public TransactionAdapter(List<Transaction> list) {
         this.list = list;
+    }
+
+    public void updateData(List<Transaction> newList) {
+        List<Transaction> oldList = new ArrayList<>(list);
+        List<Transaction> nextList = newList != null ? new ArrayList<>(newList) : new ArrayList<>();
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return oldList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return nextList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                Transaction oldItem = oldList.get(oldItemPosition);
+                Transaction newItem = nextList.get(newItemPosition);
+                String oldId = oldItem.getTransactionId();
+                String newId = newItem.getTransactionId();
+                if (oldId == null || newId == null) {
+                    return safeDateEquals(oldItem.getTimestamp(), newItem.getTimestamp());
+                }
+                return oldId.equals(newId);
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Transaction oldItem = oldList.get(oldItemPosition);
+                Transaction newItem = nextList.get(newItemPosition);
+                return oldItem.getAmount() == newItem.getAmount()
+                        && safeEquals(oldItem.getType(), newItem.getType())
+                        && safeEquals(oldItem.getDescription(), newItem.getDescription())
+                        && safeDateEquals(oldItem.getTimestamp(), newItem.getTimestamp());
+            }
+        });
+
+        list.clear();
+        list.addAll(nextList);
+        diffResult.dispatchUpdatesTo(this);
+    }
+
+    private boolean safeEquals(String a, String b) {
+        if (a == null) return b == null;
+        return a.equals(b);
+    }
+
+    private boolean safeDateEquals(java.util.Date a, java.util.Date b) {
+        if (a == null) return b == null;
+        return a.equals(b);
     }
 
     @NonNull

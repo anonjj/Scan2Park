@@ -24,6 +24,9 @@ android {
             pickFirsts += "META-INF/NOTICE.md"
             pickFirsts += "META-INF/LICENSE.md"
         }
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 
     buildTypes {
@@ -73,5 +76,7 @@ dependencies {
     implementation("com.sun.mail:android-activation:1.6.7")
 
     implementation("androidx.work:work-runtime:2.8.1")
+    implementation("com.google.zxing:core:3.5.3")
+    
 
 }

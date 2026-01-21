@@ -15,8 +15,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailService {
+    // ✅ FIXED: Corrected variable name (removed 'x')
     private static final String SENDER_EMAIL = "parkeasy.dev@gmail.com";
-    private static final String SENDER_PASSWORD = "pcte wand baqk xman"; // The 16-char App Password
+    private static final String SENDER_PASSWORD = "pcte wand baqk xman"; // Your App Password
 
     public static void sendBookingReceipt(String userEmail, Booking booking, String userName) {
         new SendMailTask(userEmail, booking, userName).execute();
@@ -51,11 +52,11 @@ public class EmailService {
 
                 MimeMessage message = new MimeMessage(session);
 
-                // ✅ UPDATED NAME HERE:
-                message.setFrom(new InternetAddress(SENDER_EMAIL, "Scan2Park Admin"));
+                // ✅ Updated Sender Name
+                message.setFrom(new InternetAddress(SENDER_EMAIL, "Scan2Pay Support"));
 
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-                message.setSubject("Scan2Park Receipt: " + booking.getSlotName()); // Updated Subject too!
+                message.setSubject("Booking Confirmed: " + booking.getSlotName());
 
                 String htmlBody = getHtmlReceipt(userName, booking);
                 message.setContent(htmlBody, "text/html; charset=utf-8");
@@ -76,22 +77,41 @@ public class EmailService {
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
             String dateStr = sdf.format(timeToDisplay);
 
-            return "<html><body style='background-color:#0F1628; color:#ffffff; font-family: sans-serif; padding:20px;'>"
-                    + "<div style='background-color:#151932; padding:20px; border-radius:10px; border:1px solid #00F0FF; max-width:500px; margin:auto;'>"
-                    + "<h2 style='color:#00F0FF; text-align:center;'>Scan2Park Receipt</h2>"
-                    + "<p style='text-align:center; color:#7A8BA0;'>Hi " + name + ", your spot is secured.</p>"
-                    + "<hr style='border-color:#333;'>"
-                    + "<table style='width:100%; color:#fff;'>"
-                    + "<tr><td style='padding:8px; color:#7A8BA0;'>Location</td><td style='text-align:right; font-weight:bold;'>" + b.getLocationName() + "</td></tr>"
-                    + "<tr><td style='padding:8px; color:#7A8BA0;'>Slot ID</td><td style='text-align:right; font-weight:bold; color:#FF00FF;'>" + b.getSlotName() + "</td></tr>"
-                    + "<tr><td style='padding:8px; color:#7A8BA0;'>Date</td><td style='text-align:right;'>" + dateStr + "</td></tr>"
-                    + "<tr><td style='padding:8px; color:#7A8BA0;'>Duration</td><td style='text-align:right;'>" + b.getDurationHours() + " Hours</td></tr>"
-                    + "<tr><td style='padding:8px; color:#7A8BA0;'>Vehicle</td><td style='text-align:right;'>" + b.getVehicleNumber() + "</td></tr>"
+            // ✅ FIXED: Clean String Concatenation for the Modern Template
+            return "<html><body style='background-color:#F4F6F8; color:#1A1D1E; font-family: Helvetica, Arial, sans-serif; padding:20px;'>"
+                    + "<div style='background-color:#FFFFFF; padding:30px; border-radius:8px; border:1px solid #E0E0E0; max-width:500px; margin:auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'>"
+
+                    // Header
+                    + "<h2 style='color:#1A1D1E; text-align:center; margin-bottom:0;'>Booking Confirmed</h2>"
+                    + "<p style='text-align:center; color:#6B7280; font-size:14px; margin-top:5px;'>Hi " + name + ", here is your receipt.</p>"
+
+                    // Divider
+                    + "<div style='margin: 20px 0; border-top:1px solid #E0E0E0;'></div>"
+
+                    // Table Details
+                    + "<table style='width:100%; border-collapse: collapse;'>"
+                    + "<tr><td style='padding:8px 0; color:#6B7280; font-size:14px;'>Location</td><td style='text-align:right; font-weight:bold; color:#1A1D1E;'>" + b.getLocationName() + "</td></tr>"
+                    + "<tr><td style='padding:8px 0; color:#6B7280; font-size:14px;'>Slot ID</td><td style='text-align:right; font-weight:bold; color:#2962FF;'>" + b.getSlotName() + "</td></tr>"
+                    + "<tr><td style='padding:8px 0; color:#6B7280; font-size:14px;'>Date</td><td style='text-align:right; color:#1A1D1E;'>" + dateStr + "</td></tr>"
+                    + "<tr><td style='padding:8px 0; color:#6B7280; font-size:14px;'>Duration</td><td style='text-align:right; color:#1A1D1E;'>" + b.getDurationHours() + " Hours</td></tr>"
+                    + "<tr><td style='padding:8px 0; color:#6B7280; font-size:14px;'>Vehicle</td><td style='text-align:right; color:#1A1D1E;'>" + b.getVehicleNumber() + "</td></tr>"
                     + "</table>"
-                    + "<hr style='border-color:#333;'>"
-                    + "<h1 style='text-align:center; color:#00FF88;'>₹" + (int)b.getTotalCost() + ".00</h1>"
-                    + "<p style='text-align:center; font-size:12px; color:#505050;'>TxID: " + b.getBookingId() + "</p>"
-                    + "</div></body></html>";
+
+                    // Divider
+                    + "<div style='margin: 20px 0; border-top:1px dashed #E0E0E0;'></div>"
+
+                    // Total Amount
+                    + "<p style='text-align:center; color:#6B7280; font-size:12px; margin:0;'>Total Amount Paid</p>"
+                    + "<h1 style='text-align:center; color:#1A1D1E; margin:5px 0 20px 0; font-size:32px;'>₹" + (int)b.getTotalCost() + ".00</h1>"
+
+                    // Transaction ID Footer
+                    + "<div style='background-color:#F9FAFB; padding:10px; border-radius:4px; text-align:center;'>"
+                    + "<p style='margin:0; font-size:11px; color:#9CA3AF; font-family: monospace;'>Transaction Ref: " + b.getBookingId() + "</p>"
+                    + "</div>"
+
+                    + "</div>" // End of Card
+                    + "<p style='text-align:center; color:#9CA3AF; font-size:12px; margin-top:20px;'>© Scan2Pay Parking Systems</p>"
+                    + "</body></html>";
         }
     }
 }

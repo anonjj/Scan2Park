@@ -11,6 +11,7 @@ import com.example.parkeasy.adapter.LocationAdapter;
 import com.example.parkeasy.data.FirebaseManager;
 import com.example.parkeasy.databinding.ActivityLocationSelectionBinding;
 import com.example.parkeasy.model.ParkingLocation;
+import com.example.parkeasy.util.NetworkUtils;
 import java.util.List;
 
 public class LocationSelectionActivity extends AppCompatActivity {
@@ -26,28 +27,35 @@ public class LocationSelectionActivity extends AppCompatActivity {
         // 1. Setup UI
         binding.btnBack.setOnClickListener(v -> finish());
         binding.recyclerLocations.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerLocations.setHasFixedSize(true);
+        binding.recyclerLocations.setItemViewCacheSize(16);
 
         // Show loading state
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.recyclerLocations.setVisibility(View.GONE);
+        setLoading(true);
 
         // 2. Fetch Data & Use the Adapter
         loadLocations();
     }
 
     private void loadLocations() {
+        if (!NetworkUtils.isOnline(this)) {
+            showEmptyState("No internet connection");
+            Toast.makeText(LocationSelectionActivity.this, "Please check your connection.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        setLoading(true);
         FirebaseManager.getInstance().fetchParkingLocations(new FirebaseManager.FirestoreCallback<>() {
             @Override
             public void onSuccess(List<ParkingLocation> locations) {
                 if (isFinishing() || isDestroyed()) return;
-                binding.progressBar.setVisibility(View.GONE);
 
                 if (locations.isEmpty()) {
-                    Toast.makeText(LocationSelectionActivity.this, "No locations found", Toast.LENGTH_SHORT).show();
+                    showEmptyState("No locations available");
                     return;
                 }
 
-                binding.recyclerLocations.setVisibility(View.VISIBLE);
+                setLoading(false);
 
                 // 3. HERE IS WHERE WE USE THE ADAPTER 👇
                 binding.recyclerLocations.setVisibility(View.VISIBLE);
@@ -70,9 +78,22 @@ public class LocationSelectionActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                binding.progressBar.setVisibility(View.GONE);
-                Toast.makeText(LocationSelectionActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                showEmptyState("Unable to load locations");
+                Toast.makeText(LocationSelectionActivity.this, "Failed to load locations.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setLoading(boolean isLoading) {
+        binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        binding.recyclerLocations.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        binding.tvEmptyLocations.setVisibility(View.GONE);
+    }
+
+    private void showEmptyState(String message) {
+        binding.recyclerLocations.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
+        binding.tvEmptyLocations.setText(message);
+        binding.tvEmptyLocations.setVisibility(View.VISIBLE);
     }
 }

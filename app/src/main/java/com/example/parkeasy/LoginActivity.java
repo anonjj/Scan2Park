@@ -10,6 +10,7 @@ import com.example.parkeasy.data.FirebaseManager;
 
 import com.example.parkeasy.databinding.ActivityLoginBinding;
 import com.example.parkeasy.model.User;
+import com.example.parkeasy.util.NetworkUtils;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +25,8 @@ public class LoginActivity extends AppCompatActivity {
         binding.btnLogin.setOnClickListener(v -> loginUser());
         binding.tvGoToSignUp.setOnClickListener(v ->
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class)));
+        binding.tvOwnerLogin.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, OwnerLoginActivity.class)));
     }
 
     private void loginUser() {
@@ -35,6 +38,14 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        if (!NetworkUtils.isOnline(this)) {
+            Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        binding.btnLogin.setEnabled(false);
+        binding.btnLogin.setText("Signing in...");
+
         FirebaseManager.getInstance().loginUser(email, password, new FirebaseManager.FirestoreCallback<User>() {
             @Override
             public void onSuccess(User result) {
@@ -44,6 +55,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
+                binding.btnLogin.setEnabled(true);
+                binding.btnLogin.setText("Sign In");
                 Toast.makeText(LoginActivity.this, "Login Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

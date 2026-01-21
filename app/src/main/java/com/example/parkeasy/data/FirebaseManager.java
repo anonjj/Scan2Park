@@ -1,16 +1,16 @@
 package com.example.parkeasy.data;
 
 import com.example.parkeasy.model.Booking;
+import com.example.parkeasy.model.Owner;
 import com.example.parkeasy.model.ParkingLocation;
 import com.example.parkeasy.model.Slot;
 import com.example.parkeasy.model.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +28,21 @@ public class FirebaseManager {
     private static FirebaseManager instance;
     private final FirebaseAuth mAuth;
     private final FirebaseFirestore mDb;
+    private static final long LOCATION_CACHE_TTL_MS = 60_000;
+    private static final long SLOT_CACHE_TTL_MS = 30_000;
+    private List<ParkingLocation> cachedLocations = new ArrayList<>();
+    private long cachedLocationsAt = 0;
+    private final Map<String, SlotCacheEntry> slotCache = new HashMap<>();
+
+    private static class SlotCacheEntry {
+        private final List<Slot> slots;
+        private final long cachedAt;
+
+        private SlotCacheEntry(List<Slot> slots, long cachedAt) {
+            this.slots = slots;
+            this.cachedAt = cachedAt;
+        }
+    }
 
 
 
@@ -112,10 +127,59 @@ public class FirebaseManager {
     }
 
     // ----------------------------------------------------------------
+    //  AUTH & OWNER
+    // ----------------------------------------------------------------
+
+    public void createOwner(String email, String password, Owner owner, FirestoreCallback<Void> callback) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
+                        String uid = mAuth.getCurrentUser().getUid();
+                        owner.setOwnerId(uid);
+                        owner.setEmail(email);
+                        owner.setCreatedAt(System.currentTimeMillis());
+                        mDb.collection("owners").document(uid)
+                                .set(owner)
+                                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                                .addOnFailureListener(callback::onFailure);
+                    } else {
+                        callback.onFailure(task.getException());
+                    }
+                });
+    }
+
+    public void loginOwner(String email, String password, FirestoreCallback<Owner> callback) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
+                        String uid = mAuth.getCurrentUser().getUid();
+                        mDb.collection("owners").document(uid).get()
+                                .addOnSuccessListener(snapshot -> {
+                                    if (snapshot.exists()) {
+                                        callback.onSuccess(snapshot.toObject(Owner.class));
+                                    } else {
+                                        mAuth.signOut();
+                                        callback.onFailure(new Exception("No owner profile found."));
+                                    }
+                                })
+                                .addOnFailureListener(callback::onFailure);
+                    } else {
+                        callback.onFailure(task.getException());
+                    }
+                });
+    }
+
+    // ----------------------------------------------------------------
     //  LOCATIONS & SLOTS
     // ----------------------------------------------------------------
 
     public void fetchParkingLocations(FirestoreCallback<List<ParkingLocation>> callback) {
+        List<ParkingLocation> cached = getCachedLocations();
+        if (cached != null) {
+            callback.onSuccess(cached);
+            return;
+        }
+
         mDb.collection("parking_locations").get()
                 .addOnSuccessListener(snapshots -> {
                     List<ParkingLocation> list = new ArrayList<>();
@@ -123,6 +187,30 @@ public class FirebaseManager {
                         ParkingLocation loc = doc.toObject(ParkingLocation.class);
                         // The document ID is the locationId, set it manually.
                         loc.setLocationId(doc.getId());
+                        Boolean active = doc.getBoolean("active");
+                        boolean isActive = active == null || Boolean.TRUE.equals(active);
+                        loc.setActive(isActive);
+                        if (isActive) {
+                            list.add(loc);
+                        }
+                    }
+                    updateLocationCache(list);
+                    callback.onSuccess(list);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    public void fetchOwnerLocations(String ownerId, FirestoreCallback<List<ParkingLocation>> callback) {
+        mDb.collection("parking_locations")
+                .whereEqualTo("ownerId", ownerId)
+                .get()
+                .addOnSuccessListener(snapshots -> {
+                    List<ParkingLocation> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : snapshots) {
+                        ParkingLocation loc = doc.toObject(ParkingLocation.class);
+                        loc.setLocationId(doc.getId());
+                        Boolean active = doc.getBoolean("active");
+                        loc.setActive(active == null || Boolean.TRUE.equals(active));
                         list.add(loc);
                     }
                     callback.onSuccess(list);
@@ -130,72 +218,133 @@ public class FirebaseManager {
                 .addOnFailureListener(callback::onFailure);
     }
 
+    public void updateOwnerLocation(String locationId, String name, String address, int ratePerHour,
+                                    int newTotalSlots, int currentTotalSlots, FirestoreCallback<Void> callback) {
+        WriteBatch batch = mDb.batch();
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("name", name);
+        updates.put("address", address);
+        updates.put("ratePerHour", ratePerHour);
+        updates.put("totalSlots", newTotalSlots);
+        batch.update(mDb.collection("parking_locations").document(locationId), updates);
+
+        if (newTotalSlots > currentTotalSlots) {
+            for (int i = currentTotalSlots + 1; i <= newTotalSlots; i++) {
+                String slotName = "S" + i;
+                String slotId = locationId + "_" + slotName;
+                Slot slot = new Slot(slotId, slotName, locationId, false, 0);
+                batch.set(mDb.collection("slots").document(slotId), slot);
+            }
+        } else if (newTotalSlots < currentTotalSlots) {
+            for (int i = newTotalSlots + 1; i <= currentTotalSlots; i++) {
+                String slotId = locationId + "_S" + i;
+                batch.update(mDb.collection("slots").document(slotId), "active", false);
+            }
+            for (int i = 1; i <= newTotalSlots; i++) {
+                String slotId = locationId + "_S" + i;
+                batch.update(mDb.collection("slots").document(slotId), "active", true);
+            }
+        }
+
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    invalidateLocationCache();
+                    invalidateSlotCache(locationId);
+                    callback.onSuccess(null);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    public void updateLocationActive(String locationId, boolean isActive, FirestoreCallback<Void> callback) {
+        mDb.collection("parking_locations").document(locationId)
+                .update("active", isActive)
+                .addOnSuccessListener(aVoid -> {
+                    invalidateLocationCache();
+                    callback.onSuccess(null);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    public void addParkingLocationForOwner(String ownerId, String name, String address, int ratePerHour, int totalSlots,
+                                           FirestoreCallback<String> callback) {
+        if (ownerId == null || ownerId.isEmpty()) {
+            callback.onFailure(new Exception("Owner not logged in."));
+            return;
+        }
+
+        String locationId = mDb.collection("parking_locations").document().getId();
+        ParkingLocation location = new ParkingLocation();
+        location.setLocationId(locationId);
+        location.setName(name);
+        location.setAddress(address);
+        location.setRatePerHour(ratePerHour);
+        location.setTotalSlots(totalSlots);
+        location.setOwnerId(ownerId);
+        location.setActive(true);
+
+        WriteBatch batch = mDb.batch();
+        batch.set(mDb.collection("parking_locations").document(locationId), location);
+
+        for (int i = 1; i <= totalSlots; i++) {
+            String slotName = "S" + i;
+            String slotId = locationId + "_" + slotName;
+            Slot slot = new Slot(slotId, slotName, locationId, false, 0);
+            batch.set(mDb.collection("slots").document(slotId), slot);
+        }
+
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    invalidateLocationCache();
+                    callback.onSuccess(locationId);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    public synchronized List<ParkingLocation> getCachedLocations() {
+        if (cachedLocationsAt == 0) {
+            return null;
+        }
+        long age = System.currentTimeMillis() - cachedLocationsAt;
+        if (age > LOCATION_CACHE_TTL_MS) {
+            return null;
+        }
+        return new ArrayList<>(cachedLocations);
+    }
+
+    public synchronized List<Slot> getCachedSlots(String locationId) {
+        SlotCacheEntry entry = slotCache.get(locationId);
+        if (entry == null) {
+            return null;
+        }
+        long age = System.currentTimeMillis() - entry.cachedAt;
+        if (age > SLOT_CACHE_TTL_MS) {
+            slotCache.remove(locationId);
+            return null;
+        }
+        return new ArrayList<>(entry.slots);
+    }
+
+    public synchronized void updateSlotCache(String locationId, List<Slot> slots) {
+        slotCache.put(locationId, new SlotCacheEntry(new ArrayList<>(slots), System.currentTimeMillis()));
+    }
+
+    private synchronized void updateLocationCache(List<ParkingLocation> locations) {
+        cachedLocations = new ArrayList<>(locations);
+        cachedLocationsAt = System.currentTimeMillis();
+    }
+
+    private synchronized void invalidateLocationCache() {
+        cachedLocationsAt = 0;
+        cachedLocations.clear();
+    }
+
+    private synchronized void invalidateSlotCache(String locationId) {
+        slotCache.remove(locationId);
+    }
+
     // ----------------------------------------------------------------
     //  BOOKING ENGINE (TRANSACTIONS)
     // ----------------------------------------------------------------
-
-    /**
-     * Atomically confirms a booking. Uses a transaction to prevent race conditions
-     * like double-booking a slot or charging a user for a slot that was just taken.
-     * The whole operation will fail if any step fails.
-     */
-    public void confirmBooking(String userId, String userName, String userEmail, String locationId, String slotId, int ratePerHour, int durationHours, FirestoreCallback<Booking> callback) {
-        final int totalCost = ratePerHour * durationHours;
-        final String bookingId = "bk_" + System.currentTimeMillis();
-
-        long startTime = System.currentTimeMillis();
-        long endTime = startTime + (durationHours * 3600000L); // 1 hour in millis
-
-        mDb.runTransaction(transaction -> {
-            // Step 1: Validate user's wallet balance.
-            DocumentSnapshot userSnap = transaction.get(mDb.collection("users").document(userId));
-            Long balance = userSnap.getLong("walletBalance");
-            if (balance == null) balance = 0L;
-
-            if (balance < totalCost) {
-                // Abort the transaction if funds are insufficient.
-                throw new FirebaseFirestoreException("Insufficient Wallet Balance!", FirebaseFirestoreException.Code.ABORTED);
-            }
-
-            // Step 2: Check for slot availability. Critical for preventing double-booking.
-            DocumentSnapshot slotSnap = transaction.get(mDb.collection("slots").document(slotId));
-            boolean isOccupied = Boolean.TRUE.equals(slotSnap.getBoolean("occupied"));
-            Long expiryTime = slotSnap.getLong("expiryTime");
-            long slotExpiry = (expiryTime != null) ? expiryTime : 0;
-
-            // "Lazy unlock" logic: if a slot is marked 'occupied' but its timer has expired,
-            // we treat it as available and allow the booking to proceed.
-            if (isOccupied && slotExpiry > System.currentTimeMillis()) {
-                // Abort if another user has a valid, active booking for this slot.
-                throw new FirebaseFirestoreException("Slot is currently in use!", FirebaseFirestoreException.Code.ABORTED);
-            }
-
-            // Step 3: Atomically update wallet and slot state.
-            // This only happens if the above checks pass.
-            transaction.update(mDb.collection("users").document(userId), "walletBalance", balance - totalCost);
-            transaction.update(mDb.collection("slots").document(slotId), "occupied", true);
-            transaction.update(mDb.collection("slots").document(slotId), "expiryTime", endTime);
-
-            // Step 4: Create the official booking record.
-            Booking booking = new Booking();
-            booking.setBookingId(bookingId);
-            booking.setUserId(userId);
-            booking.setSlotId(slotId);
-            booking.setVehicleNumber("MH-43-CY-2077"); // Placeholder vehicle number.
-            booking.setStartTime(new Date(startTime));
-            booking.setEndTime(new Date(endTime));
-            booking.setTotalCost(totalCost);
-            booking.setStatus("ACTIVE");
-
-            // Save the new booking document.
-            transaction.set(mDb.collection("bookings").document(bookingId), booking);
-
-            // The booking object is the success payload for this transaction.
-            return booking;
-
-                }).addOnSuccessListener(booking -> callback.onSuccess(booking))
-                .addOnFailureListener(e -> callback.onFailure(e));
-    }
 
     /**
      * Cancels a booking and frees up the associated parking slot.
@@ -282,48 +431,66 @@ public class FirebaseManager {
                 })
                 .addOnFailureListener(callback::onFailure);
     }
-    // REPLACES your existing "bookSlot" method
-    public void bookSlot(Slot slot, String userId, int durationHours, double totalPrice, FirestoreCallback<String> callback) {
+    public void bookSlot(Slot slot, String userId, String locationName, String vehicleNumber, long startTimeMillis,
+                         int durationHours, double totalPrice,
+                         FirestoreCallback<String> callback) {
         mDb.runTransaction(transaction -> {
+                    if (slot == null || slot.getSlotId() == null) {
+                        throw new FirebaseFirestoreException("Slot not found.", FirebaseFirestoreException.Code.ABORTED);
+                    }
+
                     // 1. Check User Wallet Balance
                     DocumentSnapshot userSnap = transaction.get(mDb.collection("users").document(userId));
-                    Double currentBalance = userSnap.getDouble("walletBalance");
-                    if (currentBalance == null) currentBalance = 0.0;
+                    Object balanceObj = userSnap.get("walletBalance");
+                    double currentBalance = 0.0;
+                    if (balanceObj instanceof Number) {
+                        currentBalance = ((Number) balanceObj).doubleValue();
+                    }
 
                     if (currentBalance < totalPrice) {
                         throw new FirebaseFirestoreException("Insufficient Funds!", FirebaseFirestoreException.Code.ABORTED);
                     }
 
-                    // 2. Generate IDs
-                    String bookingId = mDb.collection("bookings").document().getId();
-                    Date startTime = new Date();
-                    // Calculate End Time (Start + Duration)
-                    long endTimeMillis = startTime.getTime() + (durationHours * 3600000L);
+                    // 2. Check Slot State
+                    DocumentSnapshot slotSnap = transaction.get(mDb.collection("slots").document(slot.getSlotId()));
+                    Boolean isActive = slotSnap.getBoolean("active");
+                    if (isActive != null && !isActive) {
+                        throw new FirebaseFirestoreException("Slot is unavailable!", FirebaseFirestoreException.Code.ABORTED);
+                    }
+                    boolean isOccupied = Boolean.TRUE.equals(slotSnap.getBoolean("occupied"));
+                    Long expiryTime = slotSnap.getLong("expiryTime");
+                    long slotExpiry = (expiryTime != null) ? expiryTime : 0;
+                    if (isOccupied && slotExpiry > System.currentTimeMillis()) {
+                        throw new FirebaseFirestoreException("Slot is currently in use!", FirebaseFirestoreException.Code.ABORTED);
+                    }
 
-                    // 3. Create Booking Data
+                    // 3. Generate IDs
+                    String bookingId = mDb.collection("bookings").document().getId();
+                    Date startTime = new Date(startTimeMillis);
+                    long endTimeMillis = startTimeMillis + (durationHours * 3600000L);
+
+                    // 4. Create Booking Data
                     Map<String, Object> bookingData = new HashMap<>();
                     bookingData.put("bookingId", bookingId);
-                    // ⚠️ CHECK: Does your Slot model use getId() or getSlotId()? Use the correct one!
                     bookingData.put("slotId", slot.getSlotId());
                     bookingData.put("slotName", slot.getName());
+                    bookingData.put("locationId", slot.getLocationId());
+                    bookingData.put("locationName", locationName != null ? locationName : "");
                     bookingData.put("userId", userId);
+                    bookingData.put("vehicleNumber", vehicleNumber != null ? vehicleNumber : "");
                     bookingData.put("startTime", startTime);
-                    bookingData.put("endTime", new Date(endTimeMillis)); // Store End Time
+                    bookingData.put("endTime", new Date(endTimeMillis));
                     bookingData.put("durationHours", durationHours);
                     bookingData.put("totalCost", totalPrice);
-                    bookingData.put("status", "CONFIRMED");
-                    bookingData.put("locationName", "Quantum Plaza"); // Or pass this in if available
+                    bookingData.put("status", "ACTIVE");
 
-                    // 4. WRITE EVERYTHING AT ONCE
-                    // Deduct Money
+                    // 5. WRITE EVERYTHING AT ONCE
                     transaction.update(mDb.collection("users").document(userId), "walletBalance", currentBalance - totalPrice);
-                    // Create Booking
                     transaction.set(mDb.collection("bookings").document(bookingId), bookingData);
-                    // Mark Slot Occupied
                     transaction.update(mDb.collection("slots").document(slot.getSlotId()), "occupied", true);
                     transaction.update(mDb.collection("slots").document(slot.getSlotId()), "expiryTime", endTimeMillis);
 
-                    return bookingId; // Success! Return the ID.
+                    return bookingId;
 
                 }).addOnSuccessListener(callback::onSuccess)
                 .addOnFailureListener(callback::onFailure);
@@ -351,4 +518,3 @@ public class FirebaseManager {
                 .addOnFailureListener(callback::onFailure);
     }
 }
-

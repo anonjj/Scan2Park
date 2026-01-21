@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parkeasy.R;
@@ -34,13 +35,61 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
     }
 
     public void submitList(List<Slot> newSlots) {
-        this.slots = newSlots;
-        notifyDataSetChanged();
+        List<Slot> oldSlots = new ArrayList<>(this.slots);
+        List<Slot> nextSlots = newSlots != null ? new ArrayList<>(newSlots) : new ArrayList<>();
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return oldSlots.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return nextSlots.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                String oldId = oldSlots.get(oldItemPosition).getSlotId();
+                String newId = nextSlots.get(newItemPosition).getSlotId();
+                if (oldId == null || newId == null) {
+                    return oldItemPosition == newItemPosition;
+                }
+                return oldId.equals(newId);
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Slot oldSlot = oldSlots.get(oldItemPosition);
+                Slot newSlot = nextSlots.get(newItemPosition);
+                return oldSlot.isOccupied() == newSlot.isOccupied()
+                        && oldSlot.getExpiryTime() == newSlot.getExpiryTime()
+                        && oldSlot.isActive() == newSlot.isActive()
+                        && safeEquals(oldSlot.getName(), newSlot.getName());
+            }
+        });
+
+        this.slots = nextSlots;
+        if (selectedSlot != null && findIndexById(selectedSlot.getSlotId()) == -1) {
+            selectedSlot = null;
+        }
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public void setSelectedSlot(Slot slot) {
+        String previousId = selectedSlot != null ? selectedSlot.getSlotId() : null;
         this.selectedSlot = slot;
-        notifyDataSetChanged();
+
+        int previousIndex = findIndexById(previousId);
+        int newIndex = findIndexById(slot != null ? slot.getSlotId() : null);
+
+        if (previousIndex >= 0) {
+            notifyItemChanged(previousIndex);
+        }
+        if (newIndex >= 0 && newIndex != previousIndex) {
+            notifyItemChanged(newIndex);
+        }
     }
 
     @NonNull
@@ -59,6 +108,23 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
     @Override
     public int getItemCount() {
         return slots.size();
+    }
+
+    private int findIndexById(String slotId) {
+        if (slotId == null) {
+            return -1;
+        }
+        for (int i = 0; i < slots.size(); i++) {
+            if (slotId.equals(slots.get(i).getSlotId())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean safeEquals(String a, String b) {
+        if (a == null) return b == null;
+        return a.equals(b);
     }
 
     class SlotViewHolder extends RecyclerView.ViewHolder {

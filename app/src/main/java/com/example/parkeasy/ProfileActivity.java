@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.WorkManager;
 import com.example.parkeasy.databinding.ActivityProfileBinding;
 import com.example.parkeasy.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.parkeasy.util.VehicleManagerDialog;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -47,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // 3. Setup Buttons
         setupActions();
+
     }
 
     private void loadProfileData() {
@@ -95,10 +98,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setupActions() {
         // My Vehicles
-        binding.btnMyVehicles.setOnClickListener(v -> {
-            // For now, show a Toast. Later, build MyVehiclesActivity.
-            Toast.makeText(this, "Vehicle Management coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        binding.btnMyVehicles.setOnClickListener(v -> showVehicleDialog());
+
+        // Notifications
+        binding.btnNotifications.setOnClickListener(v -> showNotificationSettings());
 
         // Payment Methods
         binding.btnPaymentMethods.setOnClickListener(v -> {
@@ -125,5 +128,30 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+    private void showVehicleDialog() {
+        openVehicleDialog();
+    }
+
+    private void openVehicleDialog() {
+        VehicleManagerDialog.show(this, null, "");
+    }
+
+    private void showNotificationSettings() {
+        // Options for the user
+        String[] options = {"Parking Timer Alerts", "Overtime Warnings", "Promotional Emails"};
+        boolean[] checkedItems = {true, true, false}; // Default values (Fake it for the demo)
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Notification Preferences")
+                .setMultiChoiceItems(options, checkedItems, (dialog, which, isChecked) -> {
+                    if (which == 0 && !isChecked) {
+                         WorkManager.getInstance(this).cancelAllWorkByTag("parking_reminder");
+                         Toast.makeText(this, "Timer Alerts Muted", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setPositiveButton("Done", null)
+                .show();
     }
 }

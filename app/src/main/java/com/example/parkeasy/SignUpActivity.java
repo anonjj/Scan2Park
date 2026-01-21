@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.parkeasy.data.FirebaseManager;
 
 import com.example.parkeasy.databinding.ActivitySignUpBinding;
+import com.example.parkeasy.util.NetworkUtils;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -21,6 +22,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.btnSignUp.setOnClickListener(v -> createAccount());
+        binding.tvSignIn.setOnClickListener(v -> finish());
     }
 
     private void createAccount() {
@@ -48,6 +50,11 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
+        if (!NetworkUtils.isOnline(this)) {
+            Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // 3. UI Feedback (Show user something is happening)
         binding.btnSignUp.setEnabled(false);
         binding.btnSignUp.setText("CREATING ID...");
@@ -65,7 +72,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 // Failure
                 binding.btnSignUp.setEnabled(true);
-                binding.btnSignUp.setText("Create Account");
+                binding.btnSignUp.setText("Sign Up");
                 Toast.makeText(SignUpActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

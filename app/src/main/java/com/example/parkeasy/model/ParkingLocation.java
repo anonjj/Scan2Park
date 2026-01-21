@@ -8,6 +8,8 @@ public class ParkingLocation implements Serializable {
     private String address;
     private int ratePerHour;
     private int totalSlots;
+    private String ownerId;
+    private boolean active = true;
 
     // Empty Constructor (Required for Firestore)
     public ParkingLocation() {}
@@ -29,4 +31,10 @@ public class ParkingLocation implements Serializable {
 
     public int getTotalSlots() { return totalSlots; }
     public void setTotalSlots(int totalSlots) { this.totalSlots = totalSlots; }
+
+    public String getOwnerId() { return ownerId; }
+    public void setOwnerId(String ownerId) { this.ownerId = ownerId; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

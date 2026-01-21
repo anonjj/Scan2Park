@@ -8,6 +8,7 @@ public class Slot implements Serializable {
     private String locationId;
     private boolean occupied; // Changed to match Firestore field standard usually
     private long expiryTime;
+    private boolean active = true;
 
     // 1. Empty Constructor (Required for Firestore)
     public Slot() {
@@ -20,6 +21,7 @@ public class Slot implements Serializable {
         this.locationId = locationId;
         this.occupied = occupied;
         this.expiryTime = expiryTime;
+        this.active = true;
     }
 
     // 3. Getters and Setters
@@ -39,4 +41,7 @@ public class Slot implements Serializable {
 
     public long getExpiryTime() { return expiryTime; }
     public void setExpiryTime(long expiryTime) { this.expiryTime = expiryTime; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

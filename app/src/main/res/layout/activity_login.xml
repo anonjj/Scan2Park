@@ -131,9 +131,10 @@
             app:layout_constraintTop_toBottomOf="@id/formContainer" />
 
         <LinearLayout
+            android:id="@+id/layoutAuthLinks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -141,20 +142,38 @@
             app:layout_constraintTop_toBottomOf="@id/btnLogin"
             app:layout_constraintVertical_bias="1.0">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Don't have an account? "
-                android:textColor="@color/text_secondary"
-                android:textSize="15sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Don't have an account? "
+                    android:textColor="@color/text_secondary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvGoToSignUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign Up"
+                    android:textColor="@color/brand_blue"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tvGoToSignUp"
+                android:id="@+id/tvOwnerLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign Up"
+                android:layout_marginTop="8dp"
+                android:text="Parking owner? Login here"
                 android:textColor="@color/brand_blue"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground" />
